@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Kryptograficzny Rzut Monetą</title>
+  <style>
+    body { font-family: sans-serif; max-width: 500px; margin: 2em auto; }
+    input, button { margin: 0.5em 0; }
+    .hidden { display: none; }
+    .commitment, .reveal, .result { margin: 1em 0; padding: 1em; border: 1px solid #ccc; }
+  </style>
+</head>
+<body>
+  <h1>Kryptograficzny Rzut Monetą</h1>
+  <div id="room-setup">
+    <button id="create-room">Utwórz pokój</button>
+    <input id="room-id" placeholder="lub wpisz ID pokoju" />
+    <button id="join-room">Dołącz do pokoju</button>
+    <input id="player-nick" placeholder="Twój nick (opcjonalnie)" style="display:block; margin-top:0.5em;" />
+    <div id="room-link" style="display:none"></div>
+  </div>
+  <div id="game" class="hidden" style="position:relative;">
+    <div id="boom-skull" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.97); z-index:9999; text-align:center; padding-top:5em;">
+      <img id="skull-img" src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2o1d3J4d3M2MWVkdjkzMWE4NDZwZmF3MjM0aHoxZ3l4YTh3ZmVjaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/QNuQ2a8DZUJU0QOHPd/giphy.gif" alt="BOOM!" style="width:120px;">
+      <div style="font-size:2em; color:#b71c1c; font-weight:bold; margin-top:1em;">BOOM! nie żyjesz, hahahahaha</div>
+    </div>
+    <div id="game-content">
+      <div style="margin-bottom: 1em; font-size: 1.2em; color: #1a237e;">
+        ID pokoju: <b id="room-id-game"></b>
+      </div>
+      <div>Twój identyfikator: <b id="player-id"></b></div>
+      <div class="commitment">
+        <button id="commit-btn">Wyślij commitment</button>
+        <div id="commitment-status"></div>
+      </div>
+      <div class="reveal hidden">
+        <button id="reveal-btn">Ujawnij bit</button>
+        <div id="reveal-status"></div>
+      </div>
+      <div class="result hidden">
+        <button id="check-result">Sprawdź wynik</button>
+        <div id="result-status"></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Prosty klient JS
+    let roomId = null;
+    let playerId = null;
+    let bit = null;
+    let nonce = null;
+    let commitment = null;
+    let revealed = false;
+
+    function randomBit() { return Math.random() < 0.5 ? 0 : 1; }
+    function randomNonce() { return Math.random().toString(36).slice(2, 10); }
+    async function sha256(str) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    document.getElementById('create-room').onclick = async () => {
+      const res = await fetch('/api/create_room', {method: 'POST'});
+      const data = await res.json();
+      roomId = data.room_id;
+      document.getElementById('room-link').innerHTML = `ID pokoju: <b>${roomId}</b> (przekaż koledze)`;
+      document.getElementById('room-link').style.display = 'block';
+      startGame(); // Przechodź od razu do gry
+    };
+    document.getElementById('join-room').onclick = () => {
+      roomId = document.getElementById('room-id').value.trim();
+      if(roomId) startGame();
+    };
+
+    function startGame() {
+      const customId = document.getElementById('player-nick').value;
+      playerId = customId && customId.trim() ? customId.trim() : 'player_' + Math.random().toString(36).slice(2, 8);
+      document.getElementById('room-setup').classList.add('hidden');
+      document.getElementById('game').classList.remove('hidden');
+      document.getElementById('room-id-game').textContent = roomId;
+      document.getElementById('player-id').textContent = playerId;
+      if(playerId.toLowerCase() === 'boss_mafii') {
+        document.getElementById('game-content').style.display = 'none';
+        document.getElementById('boom-skull').style.display = 'block';
+      }
+    }
+
+    document.getElementById('commit-btn').onclick = async () => {
+      bit = randomBit();
+      nonce = randomNonce();
+      commitment = await sha256(bit + ':' + nonce);
+      await fetch(`/api/${roomId}/commit`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({player: playerId, commitment})
+      });
+      document.getElementById('commitment-status').textContent = `Commitment wysłany! (bit i nonce ukryte)`;
+      pollCommitments();
+    };
+
+    async function pollCommitments() {
+      let ready = false;
+      while(!ready) {
+        const res = await fetch(`/api/${roomId}/commitments`);
+        const data = await res.json();
+        if(Object.keys(data.commitments).length === 2) ready = true;
+        else await new Promise(r => setTimeout(r, 1000));
+      }
+      document.querySelector('.reveal').classList.remove('hidden');
+    }
+
+    document.getElementById('reveal-btn').onclick = async () => {
+      await fetch(`/api/${roomId}/reveal`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({player: playerId, bit, nonce})
+      });
+      document.getElementById('reveal-status').textContent = `Bit ujawniony! (bit: ${bit}, nonce: ${nonce})`;
+      revealed = true;
+      pollReveals();
+    };
+
+    async function pollReveals() {
+      let ready = false;
+      while(!ready) {
+        const res = await fetch(`/api/${roomId}/reveals`);
+        const data = await res.json();
+        if(Object.keys(data.reveals).length === 2) ready = true;
+        else await new Promise(r => setTimeout(r, 1000));
+      }
+      document.querySelector('.result').classList.remove('hidden');
+    }
+
+    document.getElementById('check-result').onclick = async () => {
+      const res = await fetch(`/api/${roomId}/result`);
+      const data = await res.json();
+      if(data.result !== undefined) {
+        document.getElementById('result-status').textContent = `Wynik: ${data.meaning} (XOR = ${data.result})`;
+      } else {
+        document.getElementById('result-status').textContent = 'Jeszcze nie wszyscy ujawnili bit.';
+      }
+    };
+  </script>
+</body>
+</html> 
