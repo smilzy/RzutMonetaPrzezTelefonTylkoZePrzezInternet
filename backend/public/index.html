@@ -33,7 +33,7 @@
       cursor: pointer;
     }
     #guess-modal .guess-btn img {
-      width: 90px;
+      width: 140px;
       border: 2px solid #888;
       border-radius: 50%;
       transition: border 0.2s;
@@ -65,15 +65,135 @@
       width: 180px;
       border-radius: 10px;
     }
+    #guess-modal .guess-result button#play-again-btn {
+      margin-top: 2em;
+      font-size: 1.3em;
+      padding: 0.7em 2.5em;
+      background: #43a047;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 2px 8px #0002;
+      transition: background 0.2s;
+    }
+    #guess-modal .guess-result button#play-again-btn:hover {
+      background: #2e7031;
+    }
+    .big-btn {
+      font-size: 1.3em;
+      padding: 0.7em 2.5em;
+      background: #43a047;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 2px 8px #0002;
+      margin: 0.5em 0.5em 0.5em 0;
+      transition: background 0.2s, transform 0.1s;
+      outline: none;
+    }
+    .big-btn:hover, .big-btn:focus {
+      background: #2e7031;
+      transform: scale(1.04);
+    }
+    .guess-btn img {
+      transition: box-shadow 0.2s;
+    }
+    .guess-btn.selected img, .guess-btn:focus img {
+      box-shadow: 0 0 0 4px #43a047;
+    }
+    .centered-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1em;
+      margin: 1.5em 0;
+    }
+    .centered-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .big-input {
+      font-size: 1.3em;
+      padding: 0.6em 1.2em;
+      border-radius: 10px;
+      border: 1.5px solid #bbb;
+      margin: 0.5em 0;
+      width: 260px;
+      text-align: center;
+    }
+    .room-id-box {
+      background: #f1f8e9;
+      border: 2px solid #43a047;
+      border-radius: 16px;
+      padding: 1.2em 2em;
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #1a237e;
+      margin: 1.5em auto 1em auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5em;
+      cursor: pointer;
+      max-width: 500px;
+      box-shadow: 0 2px 12px #0001;
+      position: relative;
+      transition: background 0.2s;
+    }
+    .room-id-box:hover {
+      background: #e8f5e9;
+    }
+    .copy-btn {
+      font-size: 1em;
+      padding: 0.4em 1.2em;
+      background: #388e3c;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-left: 1em;
+      transition: background 0.2s;
+    }
+    .copy-btn:hover {
+      background: #256029;
+    }
+    .copy-tooltip {
+      position: absolute;
+      top: -2.2em;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333;
+      color: #fff;
+      padding: 0.3em 1em;
+      border-radius: 6px;
+      font-size: 0.95em;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      z-index: 10;
+    }
+    .room-id-box.copied .copy-tooltip {
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
   <h1>Rzut Monetą Przez Telefon<br><span style="font-size:0.7em; font-weight:normal;">(Tylko Że Przez Internet ;))</span></h1>
-  <div id="room-setup">
-    <button id="create-room">Utwórz pokój</button>
-    <input id="room-id" placeholder="lub wpisz ID pokoju" />
-    <button id="join-room">Dołącz do pokoju</button>
-    <input id="player-nick" placeholder="Twój nick (opcjonalnie)" style="display:block; margin-top:0.5em;" />
+  <div id="room-setup" class="centered-col">
+    <button id="create-room" class="big-btn" style="margin-bottom:2em;">Utwórz pokój</button>
+    <div class="centered-row">
+      <input id="room-id" class="big-input" placeholder="Wpisz ID pokoju" />
+      <button id="join-room" class="big-btn">Dołącz do pokoju</button>
+    </div>
+    <input id="player-nick" class="big-input" placeholder="Twój nick (opcjonalnie)" style="margin-top:0.5em;" />
     <div id="room-link" style="display:none"></div>
   </div>
   <div id="game" class="hidden" style="position:relative;">
@@ -82,21 +202,46 @@
       <div style="font-size:2em; color:#b71c1c; font-weight:bold; margin-top:1em;">BOOM! nie żyjesz, hahahahaha</div>
     </div>
     <div id="game-content">
-      <div style="margin-bottom: 1em; font-size: 1.2em; color: #1a237e;">
-        ID pokoju: <b id="room-id-game"></b>
+      <div id="room-info" class="room-id-box centered-row" style="display:none;">
+        <span id="room-id-label">ID pokoju: <b id="room-id-game"></b></span>
+        <button id="copy-room-id" class="copy-btn">Kopiuj ID pokoju</button>
+        <span class="copy-tooltip" id="copy-tooltip">Kliknij, aby skopiować</span>
       </div>
       <div>Twój identyfikator: <b id="player-id"></b></div>
       <div class="commitment">
-        <button id="commit-btn">Wyślij commitment</button>
+        <button id="commit-btn" class="big-btn">Wyślij commitment</button>
         <div id="commitment-status"></div>
       </div>
       <div class="reveal hidden">
-        <button id="reveal-btn">Ujawnij bit</button>
+        <button id="reveal-btn" class="big-btn">Ujawnij bit</button>
         <div id="reveal-status"></div>
       </div>
       <div class="result hidden">
-        <button id="check-result">Sprawdź wynik</button>
+        <button id="check-result" class="big-btn">Sprawdź wynik</button>
         <div id="result-status"></div>
+      </div>
+      <div id="guess-section" class="hidden" style="text-align:center; margin-top:2em;">
+        <img id="cwaniak-img" src="https://static.pomagam.pl/media/project_photos/cache/UNvPmRE2Cgsk.jpg" alt="cwaniak" style="width:540px; margin-bottom:1em;">
+        <div id="guess-choose" style="margin-bottom:2em;">
+          <button class="guess-btn big-btn" id="guess-awers" style="background:none; border:none; cursor:pointer; display:inline-block;">
+            <img src="https://numizmatyczny.com/userdata/public/gfx/13406/Moneta-5-zl-Opactwo-Benedyktynow-w-Tyncu-awers.jpg" alt="Awers" style="width:280px; border-radius:50%; border:3px solid #888;">
+            <div style="font-size:1.3em; margin-top:0.5em;">Awers</div>
+          </button>
+          <button class="guess-btn big-btn" id="guess-rewers" style="background:none; border:none; cursor:pointer; display:inline-block;">
+            <img src="https://numizmatyczny.com/userdata/public/gfx/13407/Moneta-5-zl-Opactwo-Benedyktynow-w-Tyncu-rewers.jpg" alt="Rewers" style="width:280px; border-radius:50%; border:3px solid #888;">
+            <div style="font-size:1.3em; margin-top:0.5em;">Rewers</div>
+          </button>
+          <div class="timer-bar" style="width:70%; height:18px; background:#eee; border-radius:9px; margin:2em auto 0;">
+            <div class="timer-bar-inner" id="guess-timer-bar" style="height:100%; background:linear-gradient(90deg,#43a047,#fbc02d); width:100%;"></div>
+          </div>
+        </div>
+        <div id="guess-result" style="font-size:1.5em; font-weight:bold; margin-top:2em;"></div>
+      </div>
+      <div id="debug-info" style="margin-top:2em; background:#f8f8f8; border:1px solid #ccc; border-radius:8px; padding:1em; font-size:0.95em;">
+        <b>Debug info:</b>
+        <div>Commitment: <span id="debug-commitment"></span></div>
+        <div>Bit: <span id="debug-bit"></span></div>
+        <div>Nonce: <span id="debug-nonce"></span></div>
       </div>
     </div>
   </div>
@@ -105,11 +250,11 @@
     <div style="font-size:1.2em; margin-bottom:0.5em;">Czy jest tu jakiś cwaniak?</div>
     <img class="coin-flip" src="https://media4.giphy.com/media/MOsuJf3qp3b1fQx2Iv/giphy.gif?cid=6c09b952fwmeraqx4dliut78mqlcmhs8s0imidrlxqupfu79&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=s" alt="Rzut monetą">
     <div style="margin-bottom:1em;">Zgadnij wynik rzutu monetą:</div>
-    <button class="guess-btn" id="guess-awers">
+    <button class="guess-btn big-btn" id="guess-awers">
       <img src="https://numizmatyczny.com/userdata/public/gfx/13406/Moneta-5-zl-Opactwo-Benedyktynow-w-Tyncu-awers.jpg" alt="Awers">
       <div>Awers</div>
     </button>
-    <button class="guess-btn" id="guess-rewers">
+    <button class="guess-btn big-btn" id="guess-rewers">
       <img src="https://numizmatyczny.com/userdata/public/gfx/13407/Moneta-5-zl-Opactwo-Benedyktynow-w-Tyncu-rewers.jpg" alt="Rewers">
       <div>Rewers</div>
     </button>
@@ -146,9 +291,9 @@
     };
 
     function startGame() {
+      document.getElementById('room-setup').style.display = 'none';
       const customId = document.getElementById('player-nick').value;
       playerId = customId && customId.trim() ? customId.trim() : 'player_' + Math.random().toString(36).slice(2, 8);
-      document.getElementById('room-setup').classList.add('hidden');
       document.getElementById('game').classList.remove('hidden');
       document.getElementById('room-id-game').textContent = roomId;
       document.getElementById('player-id').textContent = playerId;
@@ -156,6 +301,8 @@
         document.getElementById('game-content').style.display = 'none';
         document.getElementById('boom-skull').style.display = 'block';
       }
+      showRoomInfo();
+      document.getElementById('game-content').classList.add('centered-col');
     }
 
     document.getElementById('commit-btn').onclick = async () => {
@@ -201,21 +348,25 @@
         if(Object.keys(data.reveals).length === 2) ready = true;
         else await new Promise(r => setTimeout(r, 1000));
       }
-      showGuessModal();
+      showGuessSection();
     }
 
     // GUESS MODAL LOGIC
     let guess = null;
-    let guessTimeout = null;
     let guessTimer = null;
-    function showGuessModal() {
-      guess = null;
-      document.getElementById('guess-modal').style.display = 'block';
+    let guessPolling = null;
+    let guessPollingTimeout = null;
+    let timeLeft = 10;
+    function showGuessSection() {
+      document.getElementById('guess-section').classList.remove('hidden');
+      document.getElementById('guess-choose').style.display = '';
       document.getElementById('guess-result').innerHTML = '';
-      document.getElementById('guess-awers').classList.remove('selected');
-      document.getElementById('guess-rewers').classList.remove('selected');
-      let timeLeft = 10;
+      guess = null;
+      timeLeft = 10;
       updateGuessTimerBar(timeLeft);
+      if (guessTimer) clearInterval(guessTimer);
+      if (guessPolling) clearInterval(guessPolling);
+      if (guessPollingTimeout) clearTimeout(guessPollingTimeout);
       guessTimer = setInterval(() => {
         timeLeft -= 0.1;
         updateGuessTimerBar(timeLeft);
@@ -224,54 +375,109 @@
           finishGuess();
         }
       }, 100);
-      guessTimeout = setTimeout(finishGuess, 10000);
+      // Polling na wynik zawsze startuje
+      guessPolling = setInterval(pollGuessResult, 700);
+      // Fallback: po 15s pokaż błąd
+      guessPollingTimeout = setTimeout(() => {
+        if (guessPolling) clearInterval(guessPolling);
+        document.getElementById('guess-choose').style.display = 'none';
+        document.getElementById('guess-result').innerHTML = 'Coś poszło nie tak. <button class="big-btn" onclick="resetGame()">Spróbuj ponownie</button>';
+      }, 15000);
     }
     function updateGuessTimerBar(timeLeft) {
       const percent = Math.max(0, Math.min(1, timeLeft/10));
       document.getElementById('guess-timer-bar').style.width = (percent*100)+"%";
     }
-    document.getElementById('guess-awers').onclick = () => {
+    document.getElementById('guess-awers').onclick = async () => {
+      if (guess !== null) return;
       guess = 0;
-      document.getElementById('guess-awers').classList.add('selected');
-      document.getElementById('guess-rewers').classList.remove('selected');
+      document.getElementById('guess-awers').style.border = '3px solid #43a047';
+      document.getElementById('guess-rewers').style.border = '3px solid #888';
       finishGuess();
     };
-    document.getElementById('guess-rewers').onclick = () => {
+    document.getElementById('guess-rewers').onclick = async () => {
+      if (guess !== null) return;
       guess = 1;
-      document.getElementById('guess-rewers').classList.add('selected');
-      document.getElementById('guess-awers').classList.remove('selected');
+      document.getElementById('guess-rewers').style.border = '3px solid #43a047';
+      document.getElementById('guess-awers').style.border = '3px solid #888';
       finishGuess();
     };
-    async function finishGuess() {
-      clearTimeout(guessTimeout);
-      clearInterval(guessTimer);
-      // Pobierz wynik
-      const res = await fetch(`/api/${roomId}/result`);
-      const data = await res.json();
-      let resultText = '';
-      let resultImg = '';
-      if (data.result !== undefined) {
-        if (guess === null) {
-          resultText = 'Czas minął! Wynik: ' + (data.result === 0 ? 'Awers' : 'Rewers');
-        } else if (guess === data.result) {
-          resultText = 'BRAWO! WYGRAŁEŚ IPHONA!';
-          resultImg = '<img src="https://i1.memy.pl/obrazki/a87d950287_masz_tu_piatke.jpg" alt="Wygrana">';
-        } else {
-          resultText = 'BOOM! nie żyjesz, hahahahaha';
-          resultImg = '<img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2o1d3J4d3M2MWVkdjkzMWE4NDZwZmF3MjM0aHoxZ3l4YTh3ZmVjaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/QNuQ2a8DZUJU0QOHPd/giphy.gif" alt="BOOM!" style="width:120px;">';
-        }
-        document.getElementById('guess-result').innerHTML = resultText + '<br>' + resultImg;
-        setTimeout(() => {
-          document.getElementById('guess-modal').style.display = 'none';
-          document.querySelector('.result').classList.remove('hidden');
-          document.getElementById('result-status').textContent = `Wynik: ${data.meaning} (XOR = ${data.result})`;
-        }, 3500);
-      } else {
-        document.getElementById('guess-result').innerHTML = 'Jeszcze nie wszyscy ujawnili bit.';
-        setTimeout(() => {
-          document.getElementById('guess-modal').style.display = 'none';
-        }, 2000);
+    function finishGuess() {
+      if (guessTimer) clearInterval(guessTimer);
+      document.getElementById('guess-choose').style.display = 'none';
+      // Wyślij guess na backend jeśli wybrano
+      if (guess !== null) {
+        fetch(`/api/${roomId}/guess`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({player: playerId, guess})
+        });
       }
+      // Polling już uruchomiony w showGuessSection
+    }
+    async function pollGuessResult() {
+      const res = await fetch(`/api/${roomId}/guess_result`);
+      if (res.status === 200) {
+        const data = await res.json();
+        if (guessPolling) clearInterval(guessPolling);
+        if (guessPollingTimeout) clearTimeout(guessPollingTimeout);
+        showGuessResultView(data);
+      }
+    }
+    function showGuessResultView(data) {
+      document.getElementById('guess-choose').style.display = 'none';
+      let html = '';
+      const myGuess = data.guesses[playerId];
+      if (myGuess === undefined) {
+        html = 'BARDZO SIĘ STARAŁEŚ, LECZ Z GRY WYLECIAŁEŚ<br><img src="/img/wyleciales.png" style="width:300px; margin-top:1em; border-radius:12px;">';
+      } else if (parseInt(myGuess) === data.result) {
+        html = 'BRAWO! WYGRAŁEŚ IPHONA!<br><img src="https://i1.memy.pl/obrazki/a87d950287_masz_tu_piatke.jpg" style="width:220px; margin-top:1em; border-radius:12px;">';
+      } else {
+        html = 'BOOM! nie żyjesz, hahahahaha<br><img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2o1d3J4d3M2MWVkdjkzMWE4NDZwZmF3MjM0aHoxZ3l4YTh3ZmVjaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/QNuQ2a8DZUJU0QOHPd/giphy.gif" style="width:120px; margin-top:1em; border-radius:12px;">';
+      }
+      html += '<br><button id="play-again-btn" class="big-btn" style="margin-top:2em;">JESZCZE RAZ?</button>';
+      document.getElementById('guess-result').innerHTML = html;
+      document.getElementById('play-again-btn').onclick = resetGame;
+    }
+    function resetGame() {
+      document.getElementById('guess-section').classList.add('hidden');
+      document.getElementById('guess-choose').style.display = '';
+      document.getElementById('guess-result').innerHTML = '';
+      guess = null;
+      // Resetuj stan gry do etapu commitment
+      document.querySelector('.result').classList.add('hidden');
+      document.querySelector('.reveal').classList.add('hidden');
+      document.getElementById('commitment-status').textContent = '';
+      document.getElementById('reveal-status').textContent = '';
+      document.getElementById('result-status').textContent = '';
+      bit = null;
+      nonce = null;
+      commitment = null;
+      revealed = false;
+    }
+    // Uzupełniaj debug info po każdej akcji:
+    document.getElementById('debug-commitment').textContent = commitment || '';
+    document.getElementById('debug-bit').textContent = bit !== null ? bit : '';
+    document.getElementById('debug-nonce').textContent = nonce || '';
+
+    function showRoomInfo() {
+      const roomInfo = document.getElementById('room-info');
+      const roomIdGame = document.getElementById('room-id-game');
+      roomInfo.style.display = '';
+      roomInfo.classList.remove('copied');
+      document.getElementById('copy-tooltip').textContent = 'Kliknij, aby skopiować';
+      // Kopiowanie po kliknięciu w ramkę lub przycisk
+      function copyId() {
+        navigator.clipboard.writeText(roomIdGame.textContent);
+        roomInfo.classList.add('copied');
+        document.getElementById('copy-tooltip').textContent = 'Skopiowano!';
+        setTimeout(() => {
+          roomInfo.classList.remove('copied');
+          document.getElementById('copy-tooltip').textContent = 'Kliknij, aby skopiować';
+        }, 1200);
+      }
+      roomInfo.onclick = copyId;
+      document.getElementById('copy-room-id').onclick = (e) => { e.stopPropagation(); copyId(); };
     }
   </script>
 </body>

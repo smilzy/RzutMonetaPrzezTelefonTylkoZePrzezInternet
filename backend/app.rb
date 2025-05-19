@@ -74,4 +74,52 @@ get '/api/:room_id/result' do
     status 400
     {error: 'Not enough reveals'}.to_json
   end
+end
+
+# Dodaj pole guesses do pokoju
+post '/api/:room_id/guess' do
+  data = JSON.parse(request.body.read)
+  player = data['player']
+  guess = data['guess']
+  room = ROOMS[params[:room_id]]
+  room[:guesses] ||= {}
+  room[:guess_times] ||= {}
+  room[:guesses][player] = guess
+  room[:guess_times][player] = Time.now.to_f
+  {ok: true}.to_json
+end
+
+get '/api/:room_id/guesses' do
+  room = ROOMS[params[:room_id]]
+  guesses = room[:guesses] || {}
+  {guesses: guesses}.to_json
+end
+
+# Wynik zgadywania: zwraca wynik, gdy obaj zgadli lub minął czas (10s od pierwszego zgadnięcia)
+get '/api/:room_id/guess_result' do
+  room = ROOMS[params[:room_id]]
+  guesses = room[:guesses] || {}
+  guess_times = room[:guess_times] || {}
+  reveals = room[:reveals]
+  # Sprawdź czy są oba zgadywania lub timeout
+  if reveals.keys.size == 2
+    if guesses.keys.size == 2
+      ready = true
+    elsif guess_times.values.min && (Time.now.to_f - guess_times.values.min > 10)
+      ready = true
+    else
+      ready = false
+    end
+    if ready
+      bits = reveals.values.map { |r| r[:bit].to_i }
+      result = bits.reduce(:^)
+      {result: result, meaning: result == 0 ? 'orzeł' : 'reszka', guesses: guesses}.to_json
+    else
+      status 202
+      {waiting: true, guesses: guesses}.to_json
+    end
+  else
+    status 400
+    {error: 'Not enough reveals'}.to_json
+  end
 end 
