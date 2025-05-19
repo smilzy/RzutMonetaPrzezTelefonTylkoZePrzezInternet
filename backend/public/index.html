@@ -8,6 +8,63 @@
     input, button { margin: 0.5em 0; }
     .hidden { display: none; }
     .commitment, .reveal, .result { margin: 1em 0; padding: 1em; border: 1px solid #ccc; }
+    #guess-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(255,255,255,0.98);
+      z-index: 10000;
+      text-align: center;
+      padding-top: 2em;
+    }
+    #guess-modal img.cwaniak {
+      width: 180px;
+      border-radius: 10px;
+      margin-bottom: 1em;
+    }
+    #guess-modal img.coin-flip {
+      width: 120px;
+      margin-bottom: 1em;
+    }
+    #guess-modal .guess-btn {
+      margin: 1em;
+      border: none;
+      background: none;
+      cursor: pointer;
+    }
+    #guess-modal .guess-btn img {
+      width: 90px;
+      border: 2px solid #888;
+      border-radius: 50%;
+      transition: border 0.2s;
+    }
+    #guess-modal .guess-btn.selected img {
+      border: 3px solid #388e3c;
+    }
+    #guess-modal .timer-bar {
+      width: 80%;
+      height: 12px;
+      background: #eee;
+      border-radius: 6px;
+      margin: 1em auto;
+      overflow: hidden;
+    }
+    #guess-modal .timer-bar-inner {
+      height: 100%;
+      background: linear-gradient(90deg, #43a047, #fbc02d);
+      width: 100%;
+      transition: width 0.2s linear;
+    }
+    #guess-modal .guess-result {
+      margin-top: 2em;
+      font-size: 1.3em;
+      font-weight: bold;
+    }
+    #guess-modal .guess-result img {
+      margin-top: 1em;
+      width: 180px;
+      border-radius: 10px;
+    }
   </style>
 </head>
 <body>
@@ -42,6 +99,22 @@
         <div id="result-status"></div>
       </div>
     </div>
+  </div>
+  <div id="guess-modal">
+    <img class="cwaniak" src="https://static.pomagam.pl/media/project_photos/cache/UNvPmRE2Cgsk.jpg" alt="cwaniak">
+    <div style="font-size:1.2em; margin-bottom:0.5em;">Czy jest tu jakiś cwaniak?</div>
+    <img class="coin-flip" src="https://media4.giphy.com/media/MOsuJf3qp3b1fQx2Iv/giphy.gif?cid=6c09b952fwmeraqx4dliut78mqlcmhs8s0imidrlxqupfu79&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=s" alt="Rzut monetą">
+    <div style="margin-bottom:1em;">Zgadnij wynik rzutu monetą:</div>
+    <button class="guess-btn" id="guess-awers">
+      <img src="https://numizmatyczny.com/userdata/public/gfx/13406/Moneta-5-zl-Opactwo-Benedyktynow-w-Tyncu-awers.jpg" alt="Awers">
+      <div>Awers</div>
+    </button>
+    <button class="guess-btn" id="guess-rewers">
+      <img src="https://numizmatyczny.com/userdata/public/gfx/13407/Moneta-5-zl-Opactwo-Benedyktynow-w-Tyncu-rewers.jpg" alt="Rewers">
+      <div>Rewers</div>
+    </button>
+    <div class="timer-bar"><div class="timer-bar-inner" id="guess-timer-bar"></div></div>
+    <div id="guess-result" class="guess-result"></div>
   </div>
   <script>
     // Prosty klient JS
@@ -128,18 +201,78 @@
         if(Object.keys(data.reveals).length === 2) ready = true;
         else await new Promise(r => setTimeout(r, 1000));
       }
-      document.querySelector('.result').classList.remove('hidden');
+      showGuessModal();
     }
 
-    document.getElementById('check-result').onclick = async () => {
+    // GUESS MODAL LOGIC
+    let guess = null;
+    let guessTimeout = null;
+    let guessTimer = null;
+    function showGuessModal() {
+      guess = null;
+      document.getElementById('guess-modal').style.display = 'block';
+      document.getElementById('guess-result').innerHTML = '';
+      document.getElementById('guess-awers').classList.remove('selected');
+      document.getElementById('guess-rewers').classList.remove('selected');
+      let timeLeft = 10;
+      updateGuessTimerBar(timeLeft);
+      guessTimer = setInterval(() => {
+        timeLeft -= 0.1;
+        updateGuessTimerBar(timeLeft);
+        if (timeLeft <= 0) {
+          clearInterval(guessTimer);
+          finishGuess();
+        }
+      }, 100);
+      guessTimeout = setTimeout(finishGuess, 10000);
+    }
+    function updateGuessTimerBar(timeLeft) {
+      const percent = Math.max(0, Math.min(1, timeLeft/10));
+      document.getElementById('guess-timer-bar').style.width = (percent*100)+"%";
+    }
+    document.getElementById('guess-awers').onclick = () => {
+      guess = 0;
+      document.getElementById('guess-awers').classList.add('selected');
+      document.getElementById('guess-rewers').classList.remove('selected');
+      finishGuess();
+    };
+    document.getElementById('guess-rewers').onclick = () => {
+      guess = 1;
+      document.getElementById('guess-rewers').classList.add('selected');
+      document.getElementById('guess-awers').classList.remove('selected');
+      finishGuess();
+    };
+    async function finishGuess() {
+      clearTimeout(guessTimeout);
+      clearInterval(guessTimer);
+      // Pobierz wynik
       const res = await fetch(`/api/${roomId}/result`);
       const data = await res.json();
-      if(data.result !== undefined) {
-        document.getElementById('result-status').textContent = `Wynik: ${data.meaning} (XOR = ${data.result})`;
+      let resultText = '';
+      let resultImg = '';
+      if (data.result !== undefined) {
+        if (guess === null) {
+          resultText = 'Czas minął! Wynik: ' + (data.result === 0 ? 'Awers' : 'Rewers');
+        } else if (guess === data.result) {
+          resultText = 'BRAWO! WYGRAŁEŚ IPHONA!';
+          resultImg = '<img src="https://i1.memy.pl/obrazki/a87d950287_masz_tu_piatke.jpg" alt="Wygrana">';
+        } else {
+          resultText = 'BOOM! nie żyjesz, hahahahaha';
+          resultImg = '<img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2o1d3J4d3M2MWVkdjkzMWE4NDZwZmF3MjM0aHoxZ3l4YTh3ZmVjaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/QNuQ2a8DZUJU0QOHPd/giphy.gif" alt="BOOM!" style="width:120px;">';
+        }
+        document.getElementById('guess-result').innerHTML = resultText + '<br>' + resultImg;
+        setTimeout(() => {
+          document.getElementById('guess-modal').style.display = 'none';
+          document.querySelector('.result').classList.remove('hidden');
+          document.getElementById('result-status').textContent = `Wynik: ${data.meaning} (XOR = ${data.result})`;
+        }, 3500);
       } else {
-        document.getElementById('result-status').textContent = 'Jeszcze nie wszyscy ujawnili bit.';
+        document.getElementById('guess-result').innerHTML = 'Jeszcze nie wszyscy ujawnili bit.';
+        setTimeout(() => {
+          document.getElementById('guess-modal').style.display = 'none';
+        }, 2000);
       }
-    };
+    }
   </script>
 </body>
 </html> 
