@@ -18,12 +18,8 @@
       padding-top: 2em;
     }
     #guess-modal img.cwaniak {
-      width: 180px;
+      width: 540px;
       border-radius: 10px;
-      margin-bottom: 1em;
-    }
-    #guess-modal img.coin-flip {
-      width: 120px;
       margin-bottom: 1em;
     }
     #guess-modal .guess-btn {
@@ -31,22 +27,24 @@
       border: none;
       background: none;
       cursor: pointer;
+      display: inline-block;
     }
     #guess-modal .guess-btn img {
-      width: 140px;
-      border: 2px solid #888;
+      width: 280px;
+      border: 3px solid #888;
       border-radius: 50%;
-      transition: border 0.2s;
+      transition: border 0.2s, box-shadow 0.2s;
     }
-    #guess-modal .guess-btn.selected img {
-      border: 3px solid #388e3c;
+    #guess-modal .guess-btn.selected img, #guess-modal .guess-btn:focus img {
+      border: 3px solid #43a047;
+      box-shadow: 0 0 0 4px #43a047;
     }
     #guess-modal .timer-bar {
-      width: 80%;
-      height: 12px;
+      width: 70%;
+      height: 18px;
       background: #eee;
-      border-radius: 6px;
-      margin: 1em auto;
+      border-radius: 9px;
+      margin: 2em auto 0;
       overflow: hidden;
     }
     #guess-modal .timer-bar-inner {
@@ -56,9 +54,9 @@
       transition: width 0.2s linear;
     }
     #guess-modal .guess-result {
-      margin-top: 2em;
-      font-size: 1.3em;
+      font-size: 1.5em;
       font-weight: bold;
+      margin-top: 2em;
     }
     #guess-modal .guess-result img {
       margin-top: 1em;
@@ -183,6 +181,152 @@
     .room-id-box.copied .copy-tooltip {
       opacity: 1;
     }
+    .steps-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 2em;
+      margin: 2em 0 1em 0;
+    }
+    .step-box {
+      background: #f8f8f8;
+      border: 2px solid #43a047;
+      border-radius: 16px;
+      padding: 2em 1.5em 1.5em 1.5em;
+      min-width: 200px;
+      min-height: 180px;
+      box-shadow: 0 2px 12px #0001;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      text-align: center;
+      position: relative;
+    }
+    .step-box .big-btn {
+      margin-top: 1em;
+    }
+    .step-title {
+      font-size: 1.1em;
+      font-weight: bold;
+      color: #1a237e;
+      margin-bottom: 0.7em;
+    }
+    .step-status {
+      font-size: 1em;
+      margin-top: 0.7em;
+      min-height: 2.2em;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      margin: 1.2em auto 0.5em auto;
+      font-size: 2.1em;
+      max-width: 95vw;
+      word-break: break-word;
+    }
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.3em;
+        padding: 0 0.2em;
+      }
+    }
+    #start-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(255,255,255,0.98);
+      z-index: 20000;
+      text-align: center;
+      padding-top: 6vh;
+    }
+    #start-modal .coin-gif {
+      width: 340px;
+      max-width: 90vw;
+      margin-bottom: 2em;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px #0002;
+    }
+    #start-modal .big-title {
+      font-size: 2.5em;
+      font-weight: bold;
+      color: #1a237e;
+      margin-bottom: 2em;
+      letter-spacing: 0.04em;
+    }
+    #start-modal .close-btn {
+      position: absolute;
+      top: 2.5vh;
+      right: 3vw;
+      font-size: 2.2em;
+      background: none;
+      border: none;
+      color: #888;
+      cursor: pointer;
+      font-weight: bold;
+      transition: color 0.2s;
+      z-index: 10;
+    }
+    #start-modal .close-btn:hover {
+      color: #43a047;
+    }
+    .guess-btn-main {
+      margin: 1em;
+      border: none;
+      background: none;
+      cursor: pointer;
+      display: inline-block;
+      box-shadow: none;
+      padding: 0;
+    }
+    .guess-btn-main img {
+      width: 220px;
+      border: 3px solid #888;
+      border-radius: 50%;
+      transition: border 0.2s, box-shadow 0.2s, opacity 0.2s;
+      background: #fff;
+    }
+    .guess-btn-main.selected img, .guess-btn-main:focus img {
+      border: 3px solid #43a047;
+      box-shadow: 0 0 0 4px #43a047;
+      background: #e8f5e9;
+    }
+    .guess-btn-main:disabled img {
+      opacity: 0.5;
+    }
+    /* Usuwam zielone tło z .big-btn dla guess-btn-main */
+    .guess-btn-main.big-btn {
+      background: none;
+      color: inherit;
+      box-shadow: none;
+    }
+    .guess-result {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-top: 2em;
+    }
+    .guess-result img {
+      margin-top: 1em;
+      width: 180px;
+      border-radius: 10px;
+    }
+    .guess-result button#play-again-btn-main {
+      margin-top: 2em;
+      font-size: 1.3em;
+      padding: 0.7em 2.5em;
+      background: #43a047;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 2px 8px #0002;
+      transition: background 0.2s;
+    }
+    .guess-result button#play-again-btn-main:hover {
+      background: #2e7031;
+    }
   </style>
 </head>
 <body>
@@ -208,58 +352,68 @@
         <span class="copy-tooltip" id="copy-tooltip">Kliknij, aby skopiować</span>
       </div>
       <div>Twój identyfikator: <b id="player-id"></b></div>
-      <div class="commitment">
-        <button id="commit-btn" class="big-btn">Wyślij commitment</button>
-        <div id="commitment-status"></div>
+    </div>
+  </div>
+  <div id="game-flow" style="text-align:center;margin-top:2em;">
+    <img id="cwaniak-img" src="https://static.pomagam.pl/media/project_photos/cache/UNvPmRE2Cgsk.jpg" alt="cwaniak" style="width:340px; border-radius:10px; margin-bottom:1em;">
+    <button id="throw-coin-btn" class="big-btn" style="font-size:2em;">JA JESTEM CWANIAK</button>
+    <div id="waiting-cwaniak" style="display:none; font-size:1.3em; color:#1a237e; margin-top:2em;">OCZEKIWANIE NA DRUGIEGO CWANIAKA</div>
+    <div id="choose-section" style="display:none;">
+      <img id="coin-gif" src="https://media4.giphy.com/media/MOsuJf3qp3b1fQx2Iv/giphy.gif?cid=6c09b952fwmeraqx4dliut78mqlcmhs8s0imidrlxqupfu79&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=s" alt="Rzut monetą" style="width:340px; border-radius:18px; margin-bottom:1em; box-shadow:0 4px 24px #0002;">
+      <div class="timer-bar" style="width:70%;height:18px;background:#eee;border-radius:9px;margin:1.2em auto 0;overflow:hidden;">
+        <div class="timer-bar-inner" id="guess-timer-bar-main" style="height:100%;background:linear-gradient(90deg,#43a047,#fbc02d);width:100%;transition:width 0.2s linear;"></div>
       </div>
-      <div class="reveal hidden">
-        <button id="reveal-btn" class="big-btn">Ujawnij bit</button>
-        <div id="reveal-status"></div>
+      <div id="choose-title" style="font-size:2.1em;font-weight:bold;color:#1a237e;margin-bottom:1.2em;">Wybierz stronę monety</div>
+      <div id="choose-row" style="display:flex;justify-content:center;gap:2em;">
+        <button class="guess-btn guess-btn-main" id="guess-awers-main">
+          <img src="https://numizmatyczny.com/userdata/public/gfx/13406/Moneta-5-zl-Opactwo-Benedyktynow-w-Tyncu-awers.jpg" alt="Awers" style="width:220px;border-radius:50%;border:3px solid #888;">
+          <div style="font-size:1.3em;margin-top:0.5em;">Awers</div>
+        </button>
+        <button class="guess-btn guess-btn-main" id="guess-rewers-main">
+          <img src="https://numizmatyczny.com/userdata/public/gfx/13407/Moneta-5-zl-Opactwo-Benedyktynow-w-Tyncu-rewers.jpg" alt="Rewers" style="width:220px;border-radius:50%;border:3px solid #888;">
+          <div style="font-size:1.3em;margin-top:0.5em;">Rewers</div>
+        </button>
       </div>
-      <div class="result hidden">
-        <button id="check-result" class="big-btn">Sprawdź wynik</button>
-        <div id="result-status"></div>
-      </div>
-      <div id="guess-section" class="hidden" style="text-align:center; margin-top:2em;">
-        <img id="cwaniak-img" src="https://static.pomagam.pl/media/project_photos/cache/UNvPmRE2Cgsk.jpg" alt="cwaniak" style="width:540px; margin-bottom:1em;">
-        <div id="guess-choose" style="margin-bottom:2em;">
-          <button class="guess-btn big-btn" id="guess-awers" style="background:none; border:none; cursor:pointer; display:inline-block;">
-            <img src="https://numizmatyczny.com/userdata/public/gfx/13406/Moneta-5-zl-Opactwo-Benedyktynow-w-Tyncu-awers.jpg" alt="Awers" style="width:280px; border-radius:50%; border:3px solid #888;">
-            <div style="font-size:1.3em; margin-top:0.5em;">Awers</div>
-          </button>
-          <button class="guess-btn big-btn" id="guess-rewers" style="background:none; border:none; cursor:pointer; display:inline-block;">
-            <img src="https://numizmatyczny.com/userdata/public/gfx/13407/Moneta-5-zl-Opactwo-Benedyktynow-w-Tyncu-rewers.jpg" alt="Rewers" style="width:280px; border-radius:50%; border:3px solid #888;">
-            <div style="font-size:1.3em; margin-top:0.5em;">Rewers</div>
-          </button>
-          <div class="timer-bar" style="width:70%; height:18px; background:#eee; border-radius:9px; margin:2em auto 0;">
-            <div class="timer-bar-inner" id="guess-timer-bar" style="height:100%; background:linear-gradient(90deg,#43a047,#fbc02d); width:100%;"></div>
-          </div>
-        </div>
-        <div id="guess-result" style="font-size:1.5em; font-weight:bold; margin-top:2em;"></div>
-      </div>
-      <div id="debug-info" style="margin-top:2em; background:#f8f8f8; border:1px solid #ccc; border-radius:8px; padding:1em; font-size:0.95em;">
-        <b>Debug info:</b>
+      <div id="waiting-info-main" style="margin-top:1.5em;font-size:1.2em;color:#1a237e;display:none;">Oczekiwanie na wybór drugiego cwaniaka...</div>
+      <div id="guess-result-main" class="guess-result"></div>
+    </div>
+  </div>
+  <!-- Modal startowy -->
+  <div id="start-modal">
+    <button class="close-btn" id="close-start-modal" title="Zamknij">&times;</button>
+    <img class="coin-gif" src="https://media4.giphy.com/media/MOsuJf3qp3b1fQx2Iv/giphy.gif?cid=6c09b952fwmeraqx4dliut78mqlcmhs8s0imidrlxqupfu79&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=s" alt="Rzut monetą">
+    <div class="big-title">RZUĆ</div>
+  </div>
+  <!-- Dodaj przycisk debug info w rogu -->
+  <button id="open-debug-modal" style="position:fixed;top:18px;right:18px;z-index:10001;font-size:1.1em;padding:0.5em 1.2em;background:#1a237e;color:#fff;border:none;border-radius:8px;box-shadow:0 2px 8px #0002;cursor:pointer;">Debug info</button>
+  <!-- Modal debug info -->
+  <div id="debug-modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.45);z-index:10002;text-align:center;">
+    <div style="background:#fff;max-width:520px;margin:7vh auto 0 auto;padding:2em 2em 1.5em 2em;border-radius:18px;box-shadow:0 4px 24px #0003;position:relative;">
+      <button id="close-debug-modal" style="position:absolute;top:0.7em;right:1em;font-size:2em;background:none;border:none;color:#888;cursor:pointer;">&times;</button>
+      <div style="font-size:1.3em;font-weight:bold;margin-bottom:1em;color:#1a237e;">Debug info</div>
+      <div style="background:#f8f8f8;border:1px solid #ccc;border-radius:8px;padding:1em;font-size:1em;text-align:left;">
         <div>Commitment: <span id="debug-commitment"></span></div>
         <div>Bit: <span id="debug-bit"></span></div>
         <div>Nonce: <span id="debug-nonce"></span></div>
       </div>
+      <div class="steps-row" style="margin-top:2em;">
+        <div class="step-box">
+          <div class="step-title">1. Commitment</div>
+          <button id="commit-btn" class="big-btn">Wyślij commitment</button>
+          <div id="commitment-status" class="step-status"></div>
+        </div>
+        <div class="step-box">
+          <div class="step-title">2. Reveal</div>
+          <button id="reveal-btn" class="big-btn hidden">Ujawnij bit</button>
+          <div id="reveal-status" class="step-status"></div>
+        </div>
+        <div class="step-box">
+          <div class="step-title">3. Wynik</div>
+          <button id="check-result" class="big-btn hidden">Sprawdź wynik</button>
+          <div id="result-status" class="step-status"></div>
+        </div>
+      </div>
     </div>
-  </div>
-  <div id="guess-modal">
-    <img class="cwaniak" src="https://static.pomagam.pl/media/project_photos/cache/UNvPmRE2Cgsk.jpg" alt="cwaniak">
-    <div style="font-size:1.2em; margin-bottom:0.5em;">Czy jest tu jakiś cwaniak?</div>
-    <img class="coin-flip" src="https://media4.giphy.com/media/MOsuJf3qp3b1fQx2Iv/giphy.gif?cid=6c09b952fwmeraqx4dliut78mqlcmhs8s0imidrlxqupfu79&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=s" alt="Rzut monetą">
-    <div style="margin-bottom:1em;">Zgadnij wynik rzutu monetą:</div>
-    <button class="guess-btn big-btn" id="guess-awers">
-      <img src="https://numizmatyczny.com/userdata/public/gfx/13406/Moneta-5-zl-Opactwo-Benedyktynow-w-Tyncu-awers.jpg" alt="Awers">
-      <div>Awers</div>
-    </button>
-    <button class="guess-btn big-btn" id="guess-rewers">
-      <img src="https://numizmatyczny.com/userdata/public/gfx/13407/Moneta-5-zl-Opactwo-Benedyktynow-w-Tyncu-rewers.jpg" alt="Rewers">
-      <div>Rewers</div>
-    </button>
-    <div class="timer-bar"><div class="timer-bar-inner" id="guess-timer-bar"></div></div>
-    <div id="guess-result" class="guess-result"></div>
   </div>
   <script>
     // Prosty klient JS
@@ -292,6 +446,7 @@
 
     function startGame() {
       document.getElementById('room-setup').style.display = 'none';
+      document.getElementById('game-flow').style.display = '';
       const customId = document.getElementById('player-nick').value;
       playerId = customId && customId.trim() ? customId.trim() : 'player_' + Math.random().toString(36).slice(2, 8);
       document.getElementById('game').classList.remove('hidden');
@@ -303,6 +458,13 @@
       }
       showRoomInfo();
       document.getElementById('game-content').classList.add('centered-col');
+      // NIE pokazuj modala startowego
+      // Ukryj wybór orzeł/reszka i pokaż tylko gif i przycisk RZUĆ
+      document.getElementById('choose-section').style.display = 'none';
+      document.getElementById('coin-gif').style.display = '';
+      document.getElementById('throw-coin-btn').style.display = '';
+      // Upewnij się, że obrazek cwaniaka jest widoczny
+      if(document.getElementById('cwaniak-img')) document.getElementById('cwaniak-img').style.display = '';
     }
 
     document.getElementById('commit-btn').onclick = async () => {
@@ -326,7 +488,8 @@
         if(Object.keys(data.commitments).length === 2) ready = true;
         else await new Promise(r => setTimeout(r, 1000));
       }
-      document.querySelector('.reveal').classList.remove('hidden');
+      document.getElementById('reveal-btn').classList.remove('hidden');
+      pollReveals();
     }
 
     document.getElementById('reveal-btn').onclick = async () => {
@@ -348,112 +511,187 @@
         if(Object.keys(data.reveals).length === 2) ready = true;
         else await new Promise(r => setTimeout(r, 1000));
       }
+      document.getElementById('check-result').classList.remove('hidden');
       showGuessSection();
     }
 
-    // GUESS MODAL LOGIC
-    let guess = null;
-    let guessTimer = null;
-    let guessPolling = null;
-    let guessPollingTimeout = null;
-    let timeLeft = 10;
+    // Usuwam całą logikę modala i przenoszę ją na główny widok:
+    let guessMain = null;
+    let guessTimerMain = null;
+    let guessPollingMain = null;
+    let guessPollingTimeoutMain = null;
+    let timeLeftMain = 10;
     function showGuessSection() {
-      document.getElementById('guess-section').classList.remove('hidden');
-      document.getElementById('guess-choose').style.display = '';
-      document.getElementById('guess-result').innerHTML = '';
-      guess = null;
-      timeLeft = 10;
-      updateGuessTimerBar(timeLeft);
-      if (guessTimer) clearInterval(guessTimer);
-      if (guessPolling) clearInterval(guessPolling);
-      if (guessPollingTimeout) clearTimeout(guessPollingTimeout);
-      guessTimer = setInterval(() => {
-        timeLeft -= 0.1;
-        updateGuessTimerBar(timeLeft);
-        if (timeLeft <= 0) {
-          clearInterval(guessTimer);
-          finishGuess();
+      guessMain = null;
+      document.getElementById('choose-section').style.display = '';
+      document.getElementById('guess-result-main').innerHTML = '';
+      document.getElementById('guess-awers-main').classList.remove('selected');
+      document.getElementById('guess-rewers-main').classList.remove('selected');
+      document.getElementById('guess-awers-main').disabled = false;
+      document.getElementById('guess-rewers-main').disabled = false;
+      document.getElementById('guess-rewers-main').style.opacity = '1';
+      document.getElementById('guess-awers-main').style.opacity = '1';
+      if(document.getElementById('waiting-info-main')) document.getElementById('waiting-info-main').style.display = 'none';
+      timeLeftMain = 10;
+      updateGuessTimerBarMain(timeLeftMain);
+      if (guessTimerMain) clearInterval(guessTimerMain);
+      if (guessPollingMain) clearInterval(guessPollingMain);
+      if (guessPollingTimeoutMain) clearTimeout(guessPollingTimeoutMain);
+      guessTimerMain = setInterval(() => {
+        timeLeftMain -= 0.1;
+        updateGuessTimerBarMain(timeLeftMain);
+        if (timeLeftMain <= 0) {
+          clearInterval(guessTimerMain);
+          finishGuessMain();
         }
       }, 100);
-      // Polling na wynik zawsze startuje
-      guessPolling = setInterval(pollGuessResult, 700);
-      // Fallback: po 15s pokaż błąd
-      guessPollingTimeout = setTimeout(() => {
-        if (guessPolling) clearInterval(guessPolling);
-        document.getElementById('guess-choose').style.display = 'none';
-        document.getElementById('guess-result').innerHTML = 'Coś poszło nie tak. <button class="big-btn" onclick="resetGame()">Spróbuj ponownie</button>';
+      guessPollingMain = setInterval(pollGuessResultMain, 700);
+      guessPollingTimeoutMain = setTimeout(() => {
+        if (guessPollingMain) clearInterval(guessPollingMain);
+        document.getElementById('guess-result-main').innerHTML = 'Coś poszło nie tak. <button class="big-btn" onclick="resetGameMain()">Spróbuj ponownie</button>';
       }, 15000);
     }
-    function updateGuessTimerBar(timeLeft) {
+    function updateGuessTimerBarMain(timeLeft) {
       const percent = Math.max(0, Math.min(1, timeLeft/10));
-      document.getElementById('guess-timer-bar').style.width = (percent*100)+"%";
+      document.getElementById('guess-timer-bar-main').style.width = (percent*100)+"%";
     }
-    document.getElementById('guess-awers').onclick = async () => {
-      if (guess !== null) return;
-      guess = 0;
-      document.getElementById('guess-awers').style.border = '3px solid #43a047';
-      document.getElementById('guess-rewers').style.border = '3px solid #888';
-      finishGuess();
+    document.getElementById('throw-coin-btn').onclick = function() {
+      document.getElementById('throw-coin-btn').style.display = 'none';
+      // NIE ukrywaj cwaniaka tutaj!
+      document.getElementById('waiting-cwaniak').style.display = '';
+      // Wyślij commitment
+      bit = randomBit();
+      nonce = randomNonce();
+      commitment = sha256(bit + ':' + nonce).then(function(c) {
+        commitment = c;
+        fetch(`/api/${roomId}/commit`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({player: playerId, commitment})
+        });
+        pollCommitmentsCwaniak();
+      });
     };
-    document.getElementById('guess-rewers').onclick = async () => {
-      if (guess !== null) return;
-      guess = 1;
-      document.getElementById('guess-rewers').style.border = '3px solid #43a047';
-      document.getElementById('guess-awers').style.border = '3px solid #888';
-      finishGuess();
+    function pollCommitmentsCwaniak() {
+      let interval = setInterval(async function() {
+        const res = await fetch(`/api/${roomId}/commitments`);
+        const data = await res.json();
+        if(Object.keys(data.commitments).length === 2) {
+          clearInterval(interval);
+          document.getElementById('waiting-cwaniak').style.display = 'none';
+          document.getElementById('cwaniak-img').style.display = 'none'; // Ukryj cwaniaka dopiero tutaj
+          showGuessSection();
+        }
+      }, 1000);
+    }
+    document.getElementById('guess-awers-main').onclick = async function() {
+      if (guessMain !== null) return;
+      guessMain = 0;
+      document.getElementById('guess-awers-main').classList.add('selected');
+      document.getElementById('guess-rewers-main').classList.remove('selected');
+      document.getElementById('guess-awers-main').disabled = true;
+      document.getElementById('guess-rewers-main').disabled = true;
+      document.getElementById('guess-rewers-main').style.opacity = '0.5';
+      document.getElementById('guess-awers-main').style.opacity = '1';
+      if(document.getElementById('waiting-info-main')) document.getElementById('waiting-info-main').style.display = '';
+      // Najpierw wyślij reveal
+      await fetch(`/api/${roomId}/reveal`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({player: playerId, bit, nonce})
+      });
+      // Potem guess
+      await fetch(`/api/${roomId}/guess`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({player: playerId, guess: guessMain})
+      });
+      finishGuessMain(false);
     };
-    function finishGuess() {
-      if (guessTimer) clearInterval(guessTimer);
-      document.getElementById('guess-choose').style.display = 'none';
-      // Wyślij guess na backend jeśli wybrano
-      if (guess !== null) {
+    document.getElementById('guess-rewers-main').onclick = async function() {
+      if (guessMain !== null) return;
+      guessMain = 1;
+      document.getElementById('guess-rewers-main').classList.add('selected');
+      document.getElementById('guess-awers-main').classList.remove('selected');
+      document.getElementById('guess-rewers-main').disabled = true;
+      document.getElementById('guess-awers-main').disabled = true;
+      document.getElementById('guess-awers-main').style.opacity = '0.5';
+      document.getElementById('guess-rewers-main').style.opacity = '1';
+      if(document.getElementById('waiting-info-main')) document.getElementById('waiting-info-main').style.display = '';
+      // Najpierw wyślij reveal
+      await fetch(`/api/${roomId}/reveal`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({player: playerId, bit, nonce})
+      });
+      // Potem guess
+      await fetch(`/api/${roomId}/guess`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({player: playerId, guess: guessMain})
+      });
+      finishGuessMain(false);
+    };
+    function finishGuessMain(hideBtns = true) {
+      if (guessTimerMain) clearInterval(guessTimerMain);
+      if(hideBtns) document.getElementById('choose-row').style.display = 'none';
+      if (guessMain !== null) {
         fetch(`/api/${roomId}/guess`, {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({player: playerId, guess})
+          body: JSON.stringify({player: playerId, guess: guessMain})
         });
       }
-      // Polling już uruchomiony w showGuessSection
     }
-    async function pollGuessResult() {
+    async function pollGuessResultMain() {
       const res = await fetch(`/api/${roomId}/guess_result`);
       if (res.status === 200) {
         const data = await res.json();
-        if (guessPolling) clearInterval(guessPolling);
-        if (guessPollingTimeout) clearTimeout(guessPollingTimeout);
-        showGuessResultView(data);
+        if (guessPollingMain) clearInterval(guessPollingMain);
+        if (guessPollingTimeoutMain) clearTimeout(guessPollingTimeoutMain);
+        showGuessResultMain(data);
+        // Upewnij się, że sekcja wyniku jest widoczna
+        document.getElementById('guess-result-main').style.display = '';
       }
     }
-    function showGuessResultView(data) {
-      document.getElementById('guess-choose').style.display = 'none';
+    function showGuessResultMain(data) {
+      // Ukryj obrazek cwaniaka
+      if (document.getElementById('cwaniak-img')) document.getElementById('cwaniak-img').style.display = 'none';
+      // Ukryj obrazek rzutu monetą
+      if (document.getElementById('coin-gif')) document.getElementById('coin-gif').style.display = 'none';
+      // Ukryj widok wyboru strony monety
+      if(document.getElementById('choose-row')) document.getElementById('choose-row').style.display = 'none';
+      if(document.getElementById('choose-title')) document.getElementById('choose-title').style.display = 'none';
+      var timerBar = document.querySelector('.timer-bar');
+      if(timerBar) timerBar.style.display = 'none';
+      // Usuń napis oczekiwania
+      if(document.getElementById('waiting-info-main')) document.getElementById('waiting-info-main').style.display = 'none';
+      // Przygotuj wynik
       let html = '';
       const myGuess = data.guesses[playerId];
       if (myGuess === undefined) {
-        html = 'BARDZO SIĘ STARAŁEŚ, LECZ Z GRY WYLECIAŁEŚ<br><img src="/img/wyleciales.png" style="width:300px; margin-top:1em; border-radius:12px;">';
+        html = '<img src="/img/wyleciales.png" style="width:300px; margin-top:1em; border-radius:12px;">' +
+               '<div style="margin-top:1em; font-size:1.5em; color:#b71c1c; font-weight:bold;">BARDZO SIĘ STARAŁEŚ, LECZ Z GRY WYLECIAŁEŚ</div>';
       } else if (parseInt(myGuess) === data.result) {
-        html = 'BRAWO! WYGRAŁEŚ IPHONA!<br><img src="https://i1.memy.pl/obrazki/a87d950287_masz_tu_piatke.jpg" style="width:220px; margin-top:1em; border-radius:12px;">';
+        html = '<img src="https://i1.memy.pl/obrazki/a87d950287_masz_tu_piatke.jpg" style="width:220px; margin-top:1em; border-radius:12px;">' +
+               '<div style="margin-top:1em; font-size:1.5em; color:#388e3c; font-weight:bold;">BRAWO! WYGRAŁEŚ IPHONA!</div>';
       } else {
-        html = 'BOOM! nie żyjesz, hahahahaha<br><img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2o1d3J4d3M2MWVkdjkzMWE4NDZwZmF3MjM0aHoxZ3l4YTh3ZmVjaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/QNuQ2a8DZUJU0QOHPd/giphy.gif" style="width:120px; margin-top:1em; border-radius:12px;">';
+        html = '<img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2o1d3J4d3M2MWVkdjkzMWE4NDZwZmF3MjM0aHoxZ3l4YTh3ZmVjaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/QNuQ2a8DZUJU0QOHPd/giphy.gif" style="width:120px; margin-top:1em; border-radius:12px;">' +
+               '<div style="margin-top:1em; font-size:1.5em; color:#b71c1c; font-weight:bold;">BOOM! nie żyjesz, hahahahaha</div>';
       }
-      html += '<br><button id="play-again-btn" class="big-btn" style="margin-top:2em;">JESZCZE RAZ?</button>';
-      document.getElementById('guess-result').innerHTML = html;
-      document.getElementById('play-again-btn').onclick = resetGame;
+      html += '<br><button id="play-again-btn-main" class="big-btn" style="margin-top:2em;">JESZCZE RAZ?</button>';
+      document.getElementById('guess-result-main').innerHTML = html;
+      document.getElementById('play-again-btn-main').onclick = () => {
+        resetGameMain();
+        if (document.getElementById('cwaniak-img')) document.getElementById('cwaniak-img').style.display = '';
+      };
     }
-    function resetGame() {
-      document.getElementById('guess-section').classList.add('hidden');
-      document.getElementById('guess-choose').style.display = '';
-      document.getElementById('guess-result').innerHTML = '';
-      guess = null;
-      // Resetuj stan gry do etapu commitment
-      document.querySelector('.result').classList.add('hidden');
-      document.querySelector('.reveal').classList.add('hidden');
-      document.getElementById('commitment-status').textContent = '';
-      document.getElementById('reveal-status').textContent = '';
-      document.getElementById('result-status').textContent = '';
-      bit = null;
-      nonce = null;
-      commitment = null;
-      revealed = false;
+    function resetGameMain() {
+      document.getElementById('choose-section').style.display = 'none';
+      document.getElementById('guess-result-main').innerHTML = '';
+      document.getElementById('coin-gif').style.display = '';
+      document.getElementById('throw-coin-btn').style.display = '';
+      guessMain = null;
     }
     // Uzupełniaj debug info po każdej akcji:
     document.getElementById('debug-commitment').textContent = commitment || '';
@@ -479,6 +717,16 @@
       roomInfo.onclick = copyId;
       document.getElementById('copy-room-id').onclick = (e) => { e.stopPropagation(); copyId(); };
     }
+
+    document.getElementById('close-start-modal').onclick = () => {
+      document.getElementById('start-modal').style.display = 'none';
+    };
+
+    // JS: obsługa debug modala
+    const debugModal = document.getElementById('debug-modal');
+    document.getElementById('open-debug-modal').onclick = () => { debugModal.style.display = 'block'; };
+    document.getElementById('close-debug-modal').onclick = () => { debugModal.style.display = 'none'; };
   </script>
 </body>
+<script src="test.js"></script>
 </html> 
