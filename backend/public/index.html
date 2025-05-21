@@ -6,7 +6,11 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <button id="theme-toggle" title="Przełącz motyw">🌙</button>
+  <div id="top-controls">
+    <button id="theme-toggle" title="Przełącz motyw">🌙</button>
+    <button id="classic-mode-btn" class="big-btn">Gra klasyczna</button>
+    <button id="prime-mode-btn" class="big-btn">Gra na liczby pierwsze</button>
+  </div>
   <h1>Rzut Monetą Przez Telefon<br><span style="font-size:0.7em; font-weight:normal;">(Tylko Że Przez Internet ;))</span></h1>
   <div id="room-setup" class="centered-col">
     <button id="create-room" class="big-btn" style="margin-bottom:2em;">Utwórz pokój</button>
@@ -21,12 +25,6 @@
     <button id="prime-start-btn" class="big-btn" style="margin-bottom:2em;">Utwórz nową grę (liczby pierwsze)</button>
     <div id="prime-game-panel" style="display:none;"></div>
   </div>
-  <!-- Przyciski wyboru trybu gry w prawym górnym rogu -->
-  <div style="position:fixed;top:18px;right:170px;z-index:10001;display:flex;gap:0.5em;">
-    <button id="classic-mode-btn" class="big-btn" style="font-size:1.1em;padding:0.5em 1.2em;">Gra klasyczna</button>
-    <button id="prime-mode-btn" class="big-btn" style="font-size:1.1em;padding:0.5em 1.2em;">Gra na liczby pierwsze</button>
-  </div>
-  <button id="open-debug-modal" style="position:fixed;top:18px;right:18px;z-index:10001;font-size:1.1em;padding:0.5em 1.2em;background:#1a237e;color:#fff;border:none;border-radius:8px;box-shadow:0 2px 8px #0002;cursor:pointer;">Debug info</button>
   <div id="game" class="hidden" style="position:relative;">
     <div id="boom-skull" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.97); z-index:9999; text-align:center; padding-top:5em;">
       <img id="skull-img" src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2o1d3J4d3M2MWVkdjkzMWE4NDZwZmF3MjM0aHoxZ3l4YTh3ZmVjaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/QNuQ2a8DZUJU0QOHPd/giphy.gif" alt="BOOM!" style="width:120px;">
@@ -67,41 +65,6 @@
       <div id="waiting-info-main" style="margin-top:1.5em;font-size:1.2em;color:#1a237e;display:none;"><span class="loader"></span> Oczekiwanie na wybór drugiego cwaniaka...</div>
     </div>
     <div id="guess-result-main" class="guess-result"></div>
-  </div>
-  <!-- Modal startowy -->
-  <div id="start-modal">
-    <button class="close-btn" id="close-start-modal" title="Zamknij">&times;</button>
-    <img class="coin-gif" src="https://media4.giphy.com/media/MOsuJf3qp3b1fQx2Iv/giphy.gif?cid=6c09b952fwmeraqx4dliut78mqlcmhs8s0imidrlxqupfu79&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=s" alt="Rzut monetą">
-    <div class="big-title">RZUĆ</div>
-  </div>
-  <!-- Modal debug info -->
-  <div id="debug-modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.45);z-index:10002;text-align:center;">
-    <div style="background:#fff;max-width:520px;margin:7vh auto 0 auto;padding:2em 2em 1.5em 2em;border-radius:18px;box-shadow:0 4px 24px #0003;position:relative;">
-      <button id="close-debug-modal" style="position:absolute;top:0.7em;right:1em;font-size:2em;background:none;border:none;color:#888;cursor:pointer;">&times;</button>
-      <div style="font-size:1.3em;font-weight:bold;margin-bottom:1em;color:#1a237e;">Debug info</div>
-      <div style="background:#f8f8f8;border:1px solid #ccc;border-radius:8px;padding:1em;font-size:1em;text-align:left;">
-        <div>Commitment: <span id="debug-commitment"></span></div>
-        <div>Bit: <span id="debug-bit"></span></div>
-        <div>Nonce: <span id="debug-nonce"></span></div>
-      </div>
-      <div class="steps-row" style="margin-top:2em;">
-        <div class="step-box">
-          <div class="step-title">1. Commitment</div>
-          <button id="commit-btn" class="big-btn">Wyślij commitment</button>
-          <div id="commitment-status" class="step-status"></div>
-        </div>
-        <div class="step-box">
-          <div class="step-title">2. Reveal</div>
-          <button id="reveal-btn" class="big-btn hidden">Ujawnij bit</button>
-          <div id="reveal-status" class="step-status"></div>
-        </div>
-        <div class="step-box">
-          <div class="step-title">3. Wynik</div>
-          <button id="check-result" class="big-btn hidden">Sprawdź wynik</button>
-          <div id="result-status" class="step-status"></div>
-        </div>
-      </div>
-    </div>
   </div>
   <script type="module" src="state.js"></script>
   <script type="module" src="roomView.js"></script>
