@@ -3,6 +3,7 @@ import { renderWaitingPhase } from './waitingPhase.js';
 import { renderCoinSelectionPhase } from './coinSelectionPhase.js';
 import { renderResultPhase } from './resultPhase.js';
 import * as api from './api.js';
+import { startTimerBar } from './coinSelectionPhase.js';
 
 async function sha256(str) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
@@ -53,6 +54,155 @@ export function renderRoomView() {
   document.getElementById('waiting-cwaniak').style.display = 'none';
   document.getElementById('guess-result-main').innerHTML = '';
   setupRoomIdCopy();
+
+  // Tryb PRIME: inny flow
+  if (appState.gameMode === 'prime') {
+    const throwBtn = document.getElementById('throw-coin-btn');
+    throwBtn.style.display = '';
+    throwBtn.onclick = async () => {
+      throwBtn.style.display = 'none';
+      document.getElementById('waiting-cwaniak').style.display = '';
+      appState.primeReady = true;
+      // Zgłoś chęć bycia setterem (atomowo)
+      const resSetter = await fetch(`/api/prime/${appState.primeRoomId}/claim_setter`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({player_id: appState.playerId})
+      });
+      const setterResp = await resSetter.json();
+      if (setterResp.is_setter) {
+        appState.isPrimeSetter = true;
+        document.getElementById('waiting-cwaniak').style.display = 'none';
+        document.getElementById('game-flow').innerHTML = `
+          <div style="font-size:1.2em;margin-bottom:1em;">Podaj dwie liczby pierwsze lub wygeneruj automatycznie:</div>
+          <input id="prime-p" class="big-input" placeholder="p (liczba pierwsza)">
+          <input id="prime-q" class="big-input" placeholder="q (liczba pierwsza)">
+          <button id="prime-generate-btn" class="big-btn">Wygeneruj automatycznie</button>
+          <button id="prime-submit-btn" class="big-btn">Ustaw liczby</button>
+          <div id="prime-gen-status" style="margin-top:1em;"></div>
+        `;
+        document.getElementById('prime-generate-btn').onclick = async () => {
+          document.getElementById('prime-gen-status').textContent = 'Generowanie...';
+          const res = await fetch('/api/prime/generate_primes', {method: 'POST'});
+          const data = await res.json();
+          document.getElementById('prime-p').value = data.p || '';
+          document.getElementById('prime-q').value = data.q || '';
+          document.getElementById('prime-gen-status').textContent = 'Wygenerowano!';
+        };
+        document.getElementById('prime-submit-btn').onclick = async () => {
+          const p = parseInt(document.getElementById('prime-p').value);
+          const q = parseInt(document.getElementById('prime-q').value);
+          if (!p || !q) {
+            document.getElementById('prime-gen-status').textContent = 'Podaj obie liczby pierwsze!';
+            return;
+          }
+          await fetch(`/api/prime/${appState.primeRoomId}/set_primes`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({p, q, setter_id: appState.playerId})
+          });
+          appState.p = p;
+          appState.q = q;
+          appState.N = p * q;
+          showPrimeNAndModulo();
+        };
+        // NIE uruchamiaj pollingu dla settera
+        return;
+      }
+      // Jeśli nie jestem setterem, czekaj na liczby (polling)
+      appState.isPrimeSetter = false;
+      document.getElementById('waiting-cwaniak').style.display = '';
+      let polling = setInterval(async () => {
+        const res = await fetch(`/api/prime/${appState.primeRoomId}/status`);
+        const data = await res.json();
+        if (data.p && data.q && data.n) {
+          clearInterval(polling);
+          appState.p = data.p;
+          appState.q = data.q;
+          appState.N = data.n;
+          showPrimeNAndModulo();
+        }
+      }, 1200);
+      function showPrimeNAndModulo() {
+        document.getElementById('game-flow').innerHTML = `
+          <div style="font-size:1.5em;margin-bottom:1em;">N = <b>${appState.N}</b></div>
+          <div class="timer-bar" style="width:70%;height:18px;background:#eee;border-radius:9px;margin:1.2em auto 0;overflow:hidden;">
+            <div class="timer-bar-inner" id="guess-timer-bar-main" style="height:100%;background:linear-gradient(90deg,#43a047,#fbc02d);width:100%;transition:width 0.2s linear;"></div>
+          </div>
+          <div id="prime-choose-modulo" style="margin-top:2em;"></div>
+        `;
+        const timerBar = document.getElementById('guess-timer-bar-main');
+        let timer = null;
+        if (!appState.isPrimeSetter) {
+          document.getElementById('prime-choose-modulo').innerHTML = `
+            <div style="font-size:1.2em;margin-bottom:1em;">Zgadnij: p i q są ≡ <b>1</b> czy <b>3</b> (mod 4)?</div>
+            <button id="prime-guess-1" class="big-btn" style="margin-right:1em;">1 (mod 4)</button>
+            <button id="prime-guess-3" class="big-btn">3 (mod 4)</button>
+            <div id="prime-guess-status" style="margin-top:1em;"></div>
+          `;
+          timer = startTimerBar(timerBar, 10, () => {
+            document.getElementById('prime-choose-modulo').innerHTML += '<div style="color:#b71c1c;font-weight:bold;">Czas minął!</div>';
+            document.getElementById('prime-guess-1').disabled = true;
+            document.getElementById('prime-guess-3').disabled = true;
+          });
+          document.getElementById('prime-guess-1').onclick = async () => {
+            clearInterval(timer);
+            document.getElementById('prime-guess-status').textContent = 'Wybrałeś 1 (mod 4)';
+            document.getElementById('prime-guess-1').disabled = true;
+            document.getElementById('prime-guess-3').disabled = true;
+            try {
+              const res = await fetch(`/api/prime/${appState.primeRoomId}/guess`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({guess: 1})
+              });
+              const data = await res.json();
+              if (data.ok) {
+                setTimeout(async () => {
+                  const revealRes = await fetch(`/api/prime/${appState.primeRoomId}/reveal`, {method: 'POST'});
+                  const revealData = await revealRes.json();
+                  renderResultPhase(revealData.correct ? 'win' : 'lose', () => { window.location.reload(); });
+                }, 800);
+              } else {
+                document.getElementById('prime-guess-status').textContent = data.error || 'Błąd';
+              }
+            } catch (e) {
+              document.getElementById('prime-guess-status').textContent = 'Błąd sieci';
+            }
+          };
+          document.getElementById('prime-guess-3').onclick = async () => {
+            clearInterval(timer);
+            document.getElementById('prime-guess-status').textContent = 'Wybrałeś 3 (mod 4)';
+            document.getElementById('prime-guess-1').disabled = true;
+            document.getElementById('prime-guess-3').disabled = true;
+            try {
+              const res = await fetch(`/api/prime/${appState.primeRoomId}/guess`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({guess: 3})
+              });
+              const data = await res.json();
+              if (data.ok) {
+                setTimeout(async () => {
+                  const revealRes = await fetch(`/api/prime/${appState.primeRoomId}/reveal`, {method: 'POST'});
+                  const revealData = await revealRes.json();
+                  renderResultPhase(revealData.correct ? 'win' : 'lose', () => { window.location.reload(); });
+                }, 800);
+              } else {
+                document.getElementById('prime-guess-status').textContent = data.error || 'Błąd';
+              }
+            } catch (e) {
+              document.getElementById('prime-guess-status').textContent = 'Błąd sieci';
+            }
+          };
+        } else {
+          // Jeśli chcesz timer dla settera, możesz go tu uruchomić:
+          // timer = startTimerBar(timerBar, 10, () => {/* opcjonalnie blokuj coś po czasie */});
+        }
+      }
+    };
+    return;
+  }
 
   // Przycisk "JA JESTEM CWANIAK" – po kliknięciu generuj commitment, wyślij do backendu, potem startuj fazę oczekiwania
   const throwBtn = document.getElementById('throw-coin-btn');

@@ -27,12 +27,11 @@ export function renderMainPage() {
     if (document.getElementById('player-nick')) document.getElementById('player-nick').value = '';
   };
   if (primeBtn) primeBtn.onclick = async () => {
-    document.getElementById('room-setup').style.display = 'none';
-    document.getElementById('prime-setup').style.display = '';
-    if (!primeModule) {
-      primeModule = await import('./prime/primeMain.js');
-    }
-    primeModule.renderPrimeMain();
+    // Utwórz pokój prime przez API
+    const res = await fetch('/api/prime/start', {method: 'POST'});
+    const data = await res.json();
+    const playerNick = document.getElementById('player-nick').value.trim();
+    onRoomJoin(data.room_id, playerNick);
   };
 
   document.getElementById('create-room').onclick = async () => {
@@ -53,8 +52,22 @@ export function renderMainPage() {
   };
 }
 
-export function onRoomJoin(roomId, playerNick) {
+export async function onRoomJoin(roomId, playerNick) {
   appState.roomId = roomId;
   appState.playerId = playerNick && playerNick !== '' ? playerNick : 'cwaniak_' + Math.random().toString(36).slice(2, 8);
+  // Sprawdź, czy to pokój prime
+  try {
+    const res = await fetch(`/api/prime/${roomId}/status`);
+    if (res.ok) {
+      appState.gameMode = 'prime';
+      appState.primeRoomId = roomId;
+    } else {
+      appState.gameMode = 'classic';
+      appState.primeRoomId = null;
+    }
+  } catch {
+    appState.gameMode = 'classic';
+    appState.primeRoomId = null;
+  }
   renderRoomView();
 } 

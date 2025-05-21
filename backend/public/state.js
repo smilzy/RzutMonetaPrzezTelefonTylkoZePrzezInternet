@@ -6,5 +6,6 @@ export const appState = {
   commitment: null,
   revealed: false,
   primeRoomId: null,
-  N: null
+  N: null,
+  gameMode: 'classic'
 }; 

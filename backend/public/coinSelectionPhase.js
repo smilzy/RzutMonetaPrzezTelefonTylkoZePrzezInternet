@@ -1,5 +1,20 @@
 import { appState } from './state.js';
 
+export function startTimerBar(timerBar, durationSec, onTimeout) {
+  let timeLeft = durationSec;
+  timerBar.style.width = '100%';
+  let timer = setInterval(() => {
+    timeLeft -= 0.1;
+    timerBar.style.width = (Math.max(0, timeLeft/durationSec)*100)+"%";
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      timerBar.style.width = '0%';
+      if (onTimeout) onTimeout();
+    }
+  }, 100);
+  return timer;
+}
+
 export function renderCoinSelectionPhase(onSelection) {
   // Pokaż sekcję wyboru monety
   document.getElementById('choose-section').style.display = '';
@@ -13,18 +28,11 @@ export function renderCoinSelectionPhase(onSelection) {
   document.getElementById('guess-rewers-main').style.opacity = '1';
   document.getElementById('guess-awers-main').style.opacity = '1';
   // Timer
-  let timeLeft = 10;
   const timerBar = document.getElementById('guess-timer-bar-main');
-  timerBar.style.width = '100%';
-  let timer = setInterval(() => {
-    timeLeft -= 0.1;
-    timerBar.style.width = (Math.max(0, timeLeft/10)*100)+"%";
-    if (timeLeft <= 0) {
-      clearInterval(timer);
-      document.getElementById('choose-section').style.display = 'none';
-      onSelection(null); // timeout
-    }
-  }, 100);
+  let timer = startTimerBar(timerBar, 10, () => {
+    document.getElementById('choose-section').style.display = 'none';
+    onSelection(null); // timeout
+  });
   // Obsługa kliknięć
   document.getElementById('guess-awers-main').onclick = () => {
     clearInterval(timer);
