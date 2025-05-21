@@ -34,6 +34,7 @@ export function renderCoinSelectionPhase(onSelection) {
     document.getElementById('guess-rewers-main').disabled = true;
     document.getElementById('guess-rewers-main').style.opacity = '0.5';
     document.getElementById('guess-awers-main').style.opacity = '1';
+    document.getElementById('waiting-info-main').style.display = '';
     onSelection(0);
   };
   document.getElementById('guess-rewers-main').onclick = () => {
@@ -44,6 +45,7 @@ export function renderCoinSelectionPhase(onSelection) {
     document.getElementById('guess-awers-main').disabled = true;
     document.getElementById('guess-awers-main').style.opacity = '0.5';
     document.getElementById('guess-rewers-main').style.opacity = '1';
+    document.getElementById('waiting-info-main').style.display = '';
     onSelection(1);
   };
 } 

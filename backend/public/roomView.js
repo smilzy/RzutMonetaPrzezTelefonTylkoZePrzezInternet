@@ -28,6 +28,14 @@ function setupRoomIdCopy() {
   copyBtn.onclick = copyId;
 }
 
+function resetRoomViewUI() {
+  document.getElementById('choose-section').style.display = 'none';
+  document.getElementById('waiting-cwaniak').style.display = 'none';
+  document.getElementById('guess-result-main').innerHTML = '';
+  document.getElementById('throw-coin-btn').style.display = '';
+  if(document.getElementById('cwaniak-img')) document.getElementById('cwaniak-img').style.display = '';
+}
+
 export function renderRoomView() {
   document.getElementById('room-setup').style.display = 'none';
   document.getElementById('game').classList.remove('hidden');
@@ -43,6 +51,7 @@ export function renderRoomView() {
   document.getElementById('coin-gif').style.display = '';
   document.getElementById('throw-coin-btn').style.display = '';
   document.getElementById('waiting-cwaniak').style.display = 'none';
+  document.getElementById('guess-result-main').innerHTML = '';
   setupRoomIdCopy();
 
   // Przycisk "JA JESTEM CWANIAK" – po kliknięciu generuj commitment, wyślij do backendu, potem startuj fazę oczekiwania
@@ -61,39 +70,68 @@ export function renderRoomView() {
       // Po obu commitmentach przechodzimy do wyboru monety
       renderCoinSelectionPhase(async (guessBit) => {
         if (guessBit === null) {
-          renderResultPhase('timeout', () => {
-            api.resetRoom(appState.roomId).then(() => renderRoomView());
+          renderResultPhase('timeout', async () => {
+            await api.resetRoom(appState.roomId);
+            resetRoomViewUI();
+            renderRoomView();
           });
           return;
         }
         await api.reveal(appState.roomId, appState.playerId, appState.bit, appState.nonce);
         await api.guess(appState.roomId, appState.playerId, guessBit);
         let resultData = null;
-        for (let i = 0; i < 30; i++) {
+        let lastError = null;
+        for (let i = 0; i < 15; i++) {
           const res = await fetch(`/api/${appState.roomId}/guess_result`);
           if (res.status === 200) {
             resultData = await res.json();
             break;
+          } else {
+            try {
+              const err = await res.json();
+              if (err && err.error) lastError = err.error;
+            } catch {}
           }
           await new Promise(r => setTimeout(r, 700));
         }
+        // Jeśli po 30 próbach nadal jest error "Not enough reveals" – uznaj to za walkower
+        if (!resultData && lastError === 'Not enough reveals') {
+          renderResultPhase('win', async () => {
+            await api.resetRoom(appState.roomId);
+            resetRoomViewUI();
+            renderRoomView();
+          });
+          return;
+        }
+        // Sprawdzamy, czy drugi gracz nie zdążył (brak guessa przeciwnika)
         if (!resultData) {
-          renderResultPhase('timeout', () => {
-            api.resetRoom(appState.roomId).then(() => renderRoomView());
+          renderResultPhase('timeout', async () => {
+            await api.resetRoom(appState.roomId);
+            resetRoomViewUI();
+            renderRoomView();
           });
           return;
         }
         const myGuess = resultData.guesses[appState.playerId];
+        // Szukamy ID przeciwnika
+        const allPlayers = Object.keys(resultData.guesses);
+        const opponentId = allPlayers.find(pid => pid !== appState.playerId);
+        const opponentGuess = opponentId ? resultData.guesses[opponentId] : undefined;
         let result;
         if (myGuess === undefined) {
           result = 'timeout';
+        } else if (opponentGuess === undefined) {
+          // Przeciwnik nie zdążył – wygrana przez walkower
+          result = 'win';
         } else if (parseInt(myGuess) === resultData.result) {
           result = 'win';
         } else {
           result = 'lose';
         }
-        renderResultPhase(result, () => {
-          api.resetRoom(appState.roomId).then(() => renderRoomView());
+        renderResultPhase(result, async () => {
+          await api.resetRoom(appState.roomId);
+          resetRoomViewUI();
+          renderRoomView();
         });
       });
     });
