@@ -36,14 +36,16 @@ post '/api/:room_id/commit' do
   data = JSON.parse(request.body.read)
   player = data['player']
   commitment = data['commitment']
-  ROOMS[params[:room_id]][:commitments][player] = commitment
+  nick = data['nick']
+  room = ROOMS[params[:room_id]]
+  room[:commitments][player] = {commitment: commitment, nick: nick}
   {ok: true}.to_json
 end
 
 # Pobierz commitmenty
 get '/api/:room_id/commitments' do
   room = ROOMS[params[:room_id]]
-  {commitments: room[:commitments]}.to_json
+  {commitments: room[:commitments] || {}}.to_json
 end
 
 # Zapisz reveal gracza
@@ -89,6 +91,15 @@ post '/api/:room_id/guess' do
   {ok: true}.to_json
 end
 
+post '/api/:room_id/reset' do
+  room = ROOMS[params[:room_id]]
+  room[:commitments] = {}
+  room[:reveals] = {}
+  room[:guesses] = {}
+  room[:guess_times] = {}
+  {ok: true}.to_json
+end
+
 get '/api/:room_id/guesses' do
   room = ROOMS[params[:room_id]]
   guesses = room[:guesses] || {}
@@ -111,9 +122,25 @@ get '/api/:room_id/guess_result' do
       ready = false
     end
     if ready
-      bits = reveals.values.map { |r| r[:bit].to_i }
-      result = bits.reduce(:^)
-      {result: result, meaning: result == 0 ? 'orzeł' : 'reszka', guesses: guesses}.to_json
+      if guesses.keys.size == 2
+        bits = reveals.values.map { |r| r[:bit].to_i }
+        result = bits.reduce(:^)
+        {result: result, meaning: result == 0 ? 'orzeł' : 'reszka', guesses: guesses}.to_json
+      elsif guesses.keys.size == 1
+        # Tylko jeden gracz oddał guessa – on wygrywa, drugi przegrywa przez timeout
+        winner = guesses.keys.first
+        loser = (reveals.keys - [winner]).first
+        winner_guess = guesses[winner].to_i
+        # result = guess zwycięzcy, meaning analogicznie
+        result = winner_guess
+        guesses_out = {}
+        guesses_out[winner] = winner_guess
+        guesses_out[loser] = nil
+        {result: result, meaning: result == 0 ? 'orzeł' : 'reszka', guesses: guesses_out}.to_json
+      else
+        status 400
+        {error: 'Brak guessów'}.to_json
+      end
     else
       status 202
       {waiting: true, guesses: guesses}.to_json

@@ -8,77 +8,6 @@
     input, button { margin: 0.5em 0; }
     .hidden { display: none; }
     .commitment, .reveal, .result { margin: 1em 0; padding: 1em; border: 1px solid #ccc; }
-    #guess-modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(255,255,255,0.98);
-      z-index: 10000;
-      text-align: center;
-      padding-top: 2em;
-    }
-    #guess-modal img.cwaniak {
-      width: 540px;
-      border-radius: 10px;
-      margin-bottom: 1em;
-    }
-    #guess-modal .guess-btn {
-      margin: 1em;
-      border: none;
-      background: none;
-      cursor: pointer;
-      display: inline-block;
-    }
-    #guess-modal .guess-btn img {
-      width: 280px;
-      border: 3px solid #888;
-      border-radius: 50%;
-      transition: border 0.2s, box-shadow 0.2s;
-    }
-    #guess-modal .guess-btn.selected img, #guess-modal .guess-btn:focus img {
-      border: 3px solid #43a047;
-      box-shadow: 0 0 0 4px #43a047;
-    }
-    #guess-modal .timer-bar {
-      width: 70%;
-      height: 18px;
-      background: #eee;
-      border-radius: 9px;
-      margin: 2em auto 0;
-      overflow: hidden;
-    }
-    #guess-modal .timer-bar-inner {
-      height: 100%;
-      background: linear-gradient(90deg, #43a047, #fbc02d);
-      width: 100%;
-      transition: width 0.2s linear;
-    }
-    #guess-modal .guess-result {
-      font-size: 1.5em;
-      font-weight: bold;
-      margin-top: 2em;
-    }
-    #guess-modal .guess-result img {
-      margin-top: 1em;
-      width: 180px;
-      border-radius: 10px;
-    }
-    #guess-modal .guess-result button#play-again-btn {
-      margin-top: 2em;
-      font-size: 1.3em;
-      padding: 0.7em 2.5em;
-      background: #43a047;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-      box-shadow: 0 2px 8px #0002;
-      transition: background 0.2s;
-    }
-    #guess-modal .guess-result button#play-again-btn:hover {
-      background: #2e7031;
-    }
     .big-btn {
       font-size: 1.3em;
       padding: 0.7em 2.5em;
@@ -92,10 +21,6 @@
       margin: 0.5em 0.5em 0.5em 0;
       transition: background 0.2s, transform 0.1s;
       outline: none;
-    }
-    .big-btn:hover, .big-btn:focus {
-      background: #2e7031;
-      transform: scale(1.04);
     }
     .guess-btn img {
       transition: box-shadow 0.2s;
@@ -327,9 +252,142 @@
     .guess-result button#play-again-btn-main:hover {
       background: #2e7031;
     }
+    body.dark-mode {
+      background: #181c24;
+      color: #e0e6ef;
+    }
+    body.dark-mode .big-btn,
+    body.dark-mode .copy-btn,
+    body.dark-mode .step-box {
+      background: #232a36;
+      color: #e0e6ef;
+      border-color: #3a445a;
+      box-shadow: 0 2px 12px #0006;
+    }
+    body.dark-mode .room-id-box {
+      background: #232a36;
+      color: #e0e6ef;
+      border-color: #3a445a;
+    }
+    body.dark-mode .guess-btn-main img,
+    body.dark-mode .guess-btn img {
+      background: #232a36;
+      border-color: #3a445a;
+    }
+    body.dark-mode .guess-btn-main.selected img,
+    body.dark-mode .guess-btn-main:focus img {
+      background: #232a36;
+      border-color: #43a047;
+    }
+    body.dark-mode .centered-row,
+    body.dark-mode .centered-col {
+      background: none;
+    }
+    body.dark-mode .guess-result {
+      color: #e0e6ef;
+    }
+    body.dark-mode .guess-result button#play-again-btn-main {
+      background: #2e7031;
+      color: #fff;
+    }
+    body.dark-mode .guess-result button#play-again-btn-main:hover {
+      background: #43a047;
+    }
+    body.dark-mode .timer-bar {
+      background: #232a36;
+    }
+    body.dark-mode .timer-bar-inner {
+      background: linear-gradient(90deg, #43a047, #fbc02d);
+    }
+    body.dark-mode #start-modal,
+    body.dark-mode #debug-modal {
+      background: rgba(24,28,36,0.98) !important;
+      color: #e0e6ef;
+    }
+    body.dark-mode input,
+    body.dark-mode .big-input {
+      background: #232a36;
+      color: #e0e6ef;
+      border-color: #3a445a;
+    }
+    body.dark-mode .copy-tooltip {
+      background: #232a36;
+      color: #e0e6ef;
+    }
+    /* Przełącznik motywu */
+    #theme-toggle {
+      position: fixed;
+      top: 18px;
+      left: 18px;
+      z-index: 10010;
+      background: none;
+      border: none;
+      font-size: 2em;
+      cursor: pointer;
+      color: #1a237e;
+      transition: color 0.2s;
+    }
+    body.dark-mode #theme-toggle {
+      color: #fbc02d;
+    }
+    .loader {
+      display: inline-block;
+      width: 1.2em;
+      height: 1.2em;
+      border: 3px solid #43a047;
+      border-radius: 50%;
+      border-top: 3px solid transparent;
+      animation: spin 0.8s linear infinite;
+      margin-right: 0.7em;
+      vertical-align: middle;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg);}
+      100% { transform: rotate(360deg);}
+    }
+    body.dark-mode .loader {
+      border: 3px solid #fbc02d;
+      border-top: 3px solid transparent;
+    }
+    .selected-pending img {
+      border: 3px solid #fbc02d !important;
+      box-shadow: 0 0 0 4px #fbc02d !important;
+      background: #fffbe6 !important;
+    }
+    body.dark-mode .selected-pending img {
+      border: 3px solid #fbc02d !important;
+      box-shadow: 0 0 0 4px #fbc02d !important;
+      background: #232a36 !important;
+    }
+    #choose-row {
+      display: flex !important;
+      flex-direction: row !important;
+      justify-content: center;
+      gap: 2em;
+    }
+    .selected-win img {
+      border: 3px solid #43a047 !important;
+      box-shadow: 0 0 0 4px #43a047 !important;
+    }
+    .selected-lose img {
+      border: 3px solid #b71c1c !important;
+      box-shadow: 0 0 0 4px #b71c1c !important;
+    }
+    .player-id-label {
+      font-size: 0.85em;
+      font-weight: normal;
+      display: block;
+      margin-left: 0;
+      margin-top: 0.3em;
+      color: #888;
+    }
+    body.dark-mode .player-id-label {
+      color: #aaa;
+    }
   </style>
 </head>
 <body>
+  <button id="theme-toggle" title="Przełącz motyw">🌙</button>
   <h1>Rzut Monetą Przez Telefon<br><span style="font-size:0.7em; font-weight:normal;">(Tylko Że Przez Internet ;))</span></h1>
   <div id="room-setup" class="centered-col">
     <button id="create-room" class="big-btn" style="margin-bottom:2em;">Utwórz pokój</button>
@@ -346,19 +404,22 @@
       <div style="font-size:2em; color:#b71c1c; font-weight:bold; margin-top:1em;">BOOM! nie żyjesz, hahahahaha</div>
     </div>
     <div id="game-content">
-      <div id="room-info" class="room-id-box centered-row" style="display:none;">
-        <span id="room-id-label">ID pokoju: <b id="room-id-game"></b></span>
-        <button id="copy-room-id" class="copy-btn">Kopiuj ID pokoju</button>
+      <div id="room-info" class="room-id-box centered-row" style="display:none; flex-direction:row; align-items:center; justify-content:center; gap:1em;">
+        <span id="room-id-label" style="font-size:1.3em;">ID pokoju: <b id="room-id-game" style="font-size:1.3em;"></b></span>
+        <button id="copy-room-id" class="copy-btn">Kopiuj</button>
         <span class="copy-tooltip" id="copy-tooltip">Kliknij, aby skopiować</span>
       </div>
-      <div>Twój identyfikator: <b id="player-id"></b></div>
     </div>
   </div>
   <div id="game-flow" style="text-align:center;margin-top:2em;">
     <img id="cwaniak-img" src="https://static.pomagam.pl/media/project_photos/cache/UNvPmRE2Cgsk.jpg" alt="cwaniak" style="width:340px; border-radius:10px; margin-bottom:1em;">
     <button id="throw-coin-btn" class="big-btn" style="font-size:2em;">JA JESTEM CWANIAK</button>
-    <div id="waiting-cwaniak" style="display:none; font-size:1.3em; color:#1a237e; margin-top:2em;">OCZEKIWANIE NA DRUGIEGO CWANIAKA</div>
+    <div id="waiting-cwaniak" style="display:none; font-size:1.3em; color:#1a237e; margin-top:2em;">
+      <span class="loader"></span>
+      OCZEKIWANIE NA DRUGIEGO CWANIAKA
+    </div>
     <div id="choose-section" style="display:none;">
+      <div id="pojedynek-message" style="font-size:1.2em;font-weight:bold;color:#b71c1c;margin-bottom:1em;"></div>
       <img id="coin-gif" src="https://media4.giphy.com/media/MOsuJf3qp3b1fQx2Iv/giphy.gif?cid=6c09b952fwmeraqx4dliut78mqlcmhs8s0imidrlxqupfu79&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=s" alt="Rzut monetą" style="width:340px; border-radius:18px; margin-bottom:1em; box-shadow:0 4px 24px #0002;">
       <div class="timer-bar" style="width:70%;height:18px;background:#eee;border-radius:9px;margin:1.2em auto 0;overflow:hidden;">
         <div class="timer-bar-inner" id="guess-timer-bar-main" style="height:100%;background:linear-gradient(90deg,#43a047,#fbc02d);width:100%;transition:width 0.2s linear;"></div>
@@ -374,7 +435,7 @@
           <div style="font-size:1.3em;margin-top:0.5em;">Rewers</div>
         </button>
       </div>
-      <div id="waiting-info-main" style="margin-top:1.5em;font-size:1.2em;color:#1a237e;display:none;">Oczekiwanie na wybór drugiego cwaniaka...</div>
+      <div id="waiting-info-main" style="margin-top:1.5em;font-size:1.2em;color:#1a237e;display:none;"><span class="loader"></span> Oczekiwanie na wybór drugiego cwaniaka...</div>
       <div id="guess-result-main" class="guess-result"></div>
     </div>
   </div>
@@ -448,10 +509,10 @@
       document.getElementById('room-setup').style.display = 'none';
       document.getElementById('game-flow').style.display = '';
       const customId = document.getElementById('player-nick').value;
-      playerId = customId && customId.trim() ? customId.trim() : 'player_' + Math.random().toString(36).slice(2, 8);
+      playerId = customId && customId.trim() ? customId.trim() : 'cwaniak_' + Math.random().toString(36).slice(2, 8);
       document.getElementById('game').classList.remove('hidden');
       document.getElementById('room-id-game').textContent = roomId;
-      document.getElementById('player-id').textContent = playerId;
+      document.getElementById('room-info').style.display = '';
       if(playerId.toLowerCase() === 'boss_mafii') {
         document.getElementById('game-content').style.display = 'none';
         document.getElementById('boom-skull').style.display = 'block';
@@ -548,8 +609,10 @@
       guessPollingMain = setInterval(pollGuessResultMain, 700);
       guessPollingTimeoutMain = setTimeout(() => {
         if (guessPollingMain) clearInterval(guessPollingMain);
-        document.getElementById('guess-result-main').innerHTML = 'Coś poszło nie tak. <button class="big-btn" onclick="resetGameMain()">Spróbuj ponownie</button>';
+        document.getElementById('guess-result-main').innerHTML = '<img src="/img/wyleciales.jpg" style="width:300px; margin-top:1em; border-radius:12px;">' +
+          '<div style="margin-top:1em; font-size:1.5em; color:#b71c1c; font-weight:bold;">BARDZO SIĘ STARAŁEŚ, LECZ Z GRY WYLECIAŁEŚ</div>';
       }, 15000);
+      updatePojedynekMessage();
     }
     function updateGuessTimerBarMain(timeLeft) {
       const percent = Math.max(0, Math.min(1, timeLeft/10));
@@ -587,8 +650,8 @@
     document.getElementById('guess-awers-main').onclick = async function() {
       if (guessMain !== null) return;
       guessMain = 0;
-      document.getElementById('guess-awers-main').classList.add('selected');
-      document.getElementById('guess-rewers-main').classList.remove('selected');
+      document.getElementById('guess-awers-main').classList.add('selected-pending');
+      document.getElementById('guess-rewers-main').classList.remove('selected-pending');
       document.getElementById('guess-awers-main').disabled = true;
       document.getElementById('guess-rewers-main').disabled = true;
       document.getElementById('guess-rewers-main').style.opacity = '0.5';
@@ -611,8 +674,8 @@
     document.getElementById('guess-rewers-main').onclick = async function() {
       if (guessMain !== null) return;
       guessMain = 1;
-      document.getElementById('guess-rewers-main').classList.add('selected');
-      document.getElementById('guess-awers-main').classList.remove('selected');
+      document.getElementById('guess-rewers-main').classList.add('selected-pending');
+      document.getElementById('guess-awers-main').classList.remove('selected-pending');
       document.getElementById('guess-rewers-main').disabled = true;
       document.getElementById('guess-awers-main').disabled = true;
       document.getElementById('guess-awers-main').style.opacity = '0.5';
@@ -641,7 +704,14 @@
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({player: playerId, guess: guessMain})
         });
+      } else {
+        // Timeout: gracz nie dokonał wyboru
+        document.getElementById('guess-result-main').innerHTML = '<img src="/img/wyleciales.jpg" style="width:300px; margin-top:1em; border-radius:12px;">' +
+          '<div style="margin-top:1em; font-size:1.5em; color:#b71c1c; font-weight:bold;">BARDZO SIĘ STARAŁEŚ, LECZ Z GRY WYLECIAŁEŚ</div>';
+        document.getElementById('guess-result-main').style.display = '';
+        return;
       }
+      updatePojedynekMessage();
     }
     async function pollGuessResultMain() {
       const res = await fetch(`/api/${roomId}/guess_result`);
@@ -659,20 +729,42 @@
       if (document.getElementById('cwaniak-img')) document.getElementById('cwaniak-img').style.display = 'none';
       // Ukryj obrazek rzutu monetą
       if (document.getElementById('coin-gif')) document.getElementById('coin-gif').style.display = 'none';
-      // Ukryj widok wyboru strony monety
-      if(document.getElementById('choose-row')) document.getElementById('choose-row').style.display = 'none';
+      // NIE ukrywaj wyboru monety ani tytułu!
+      // Wygaszaj niewybraną monetę i ustaw obramowanie zależnie od wyniku
+      const myGuess = data.guesses[playerId];
+      const win = (myGuess !== undefined && parseInt(myGuess) === data.result);
+      // Najpierw usuń stare klasy
+      document.getElementById('guess-awers-main').classList.remove('selected', 'selected-pending', 'selected-win', 'selected-lose');
+      document.getElementById('guess-rewers-main').classList.remove('selected', 'selected-pending', 'selected-win', 'selected-lose');
+      if (guessMain === 0) {
+        if (win) {
+          document.getElementById('guess-awers-main').classList.add('selected-win');
+        } else {
+          document.getElementById('guess-awers-main').classList.add('selected-lose');
+        }
+        document.getElementById('guess-rewers-main').style.opacity = '0.5';
+        document.getElementById('guess-awers-main').style.opacity = '1';
+      } else if (guessMain === 1) {
+        if (win) {
+          document.getElementById('guess-rewers-main').classList.add('selected-win');
+        } else {
+          document.getElementById('guess-rewers-main').classList.add('selected-lose');
+        }
+        document.getElementById('guess-awers-main').style.opacity = '0.5';
+        document.getElementById('guess-rewers-main').style.opacity = '1';
+      }
       if(document.getElementById('choose-title')) document.getElementById('choose-title').style.display = 'none';
+      if(document.getElementById('choose-row')) document.getElementById('choose-row').style.display = 'none';
       var timerBar = document.querySelector('.timer-bar');
       if(timerBar) timerBar.style.display = 'none';
       // Usuń napis oczekiwania
       if(document.getElementById('waiting-info-main')) document.getElementById('waiting-info-main').style.display = 'none';
       // Przygotuj wynik
       let html = '';
-      const myGuess = data.guesses[playerId];
       if (myGuess === undefined) {
-        html = '<img src="/img/wyleciales.png" style="width:300px; margin-top:1em; border-radius:12px;">' +
+        html = '<img src="/img/wyleciales.jpg" style="width:300px; margin-top:1em; border-radius:12px;">' +
                '<div style="margin-top:1em; font-size:1.5em; color:#b71c1c; font-weight:bold;">BARDZO SIĘ STARAŁEŚ, LECZ Z GRY WYLECIAŁEŚ</div>';
-      } else if (parseInt(myGuess) === data.result) {
+      } else if (win) {
         html = '<img src="https://i1.memy.pl/obrazki/a87d950287_masz_tu_piatke.jpg" style="width:220px; margin-top:1em; border-radius:12px;">' +
                '<div style="margin-top:1em; font-size:1.5em; color:#388e3c; font-weight:bold;">BRAWO! WYGRAŁEŚ IPHONA!</div>';
       } else {
@@ -681,7 +773,8 @@
       }
       html += '<br><button id="play-again-btn-main" class="big-btn" style="margin-top:2em;">JESZCZE RAZ?</button>';
       document.getElementById('guess-result-main').innerHTML = html;
-      document.getElementById('play-again-btn-main').onclick = () => {
+      document.getElementById('play-again-btn-main').onclick = async () => {
+        await fetch(`/api/${roomId}/reset`, {method: 'POST'});
         resetGameMain();
         if (document.getElementById('cwaniak-img')) document.getElementById('cwaniak-img').style.display = '';
       };
@@ -691,7 +784,13 @@
       document.getElementById('guess-result-main').innerHTML = '';
       document.getElementById('coin-gif').style.display = '';
       document.getElementById('throw-coin-btn').style.display = '';
+      // WYCZYŚĆ RAMKI Z MONET
+      document.getElementById('guess-awers-main').classList.remove('selected-win', 'selected-lose', 'selected-pending', 'selected');
+      document.getElementById('guess-rewers-main').classList.remove('selected-win', 'selected-lose', 'selected-pending', 'selected');
+      document.getElementById('guess-awers-main').style.opacity = '1';
+      document.getElementById('guess-rewers-main').style.opacity = '1';
       guessMain = null;
+      updatePojedynekMessage();
     }
     // Uzupełniaj debug info po każdej akcji:
     document.getElementById('debug-commitment').textContent = commitment || '';
@@ -704,7 +803,6 @@
       roomInfo.style.display = '';
       roomInfo.classList.remove('copied');
       document.getElementById('copy-tooltip').textContent = 'Kliknij, aby skopiować';
-      // Kopiowanie po kliknięciu w ramkę lub przycisk
       function copyId() {
         navigator.clipboard.writeText(roomIdGame.textContent);
         roomInfo.classList.add('copied');
@@ -726,6 +824,66 @@
     const debugModal = document.getElementById('debug-modal');
     document.getElementById('open-debug-modal').onclick = () => { debugModal.style.display = 'block'; };
     document.getElementById('close-debug-modal').onclick = () => { debugModal.style.display = 'none'; };
+
+    // Motyw jasny/ciemny
+    function setTheme(dark) {
+      document.body.classList.toggle('dark-mode', dark);
+      document.getElementById('theme-toggle').textContent = dark ? '☀️' : '🌙';
+      localStorage.setItem('theme', dark ? 'dark' : 'light');
+    }
+    document.getElementById('theme-toggle').onclick = () => {
+      setTheme(!document.body.classList.contains('dark-mode'));
+    };
+    // Ustaw motyw z localStorage lub systemowy
+    (function() {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        setTheme(true);
+      } else {
+        setTheme(false);
+      }
+    })();
+
+    // --- POJEDYNEK MESSAGE LOGIC ---
+    async function updatePojedynekMessage() {
+      const pojedynekDiv = document.getElementById('pojedynek-message');
+      try {
+        const res = await fetch(`/api/${roomId}/commitments`);
+        const data = await res.json();
+        const players = Object.keys(data.commitments || {});
+        if (players.length === 1) {
+          pojedynekDiv.textContent = 'JESTEŚ JEDYNYM CWANIAKIEM W TYM POKOJU';
+        } else if (players.length === 2) {
+          const nicks = players.map(pid => {
+            const nick = data.commitments[pid]?.nick;
+            return nick && nick.trim() ? nick : pid;
+          });
+          pojedynekDiv.innerHTML = 'POJEDYNEK CWANIAKÓW<br>' + nicks[0] + ' <span style="color:#888;">vs</span> ' + nicks[1];
+        } else {
+          pojedynekDiv.textContent = '';
+        }
+      } catch (e) {
+        pojedynekDiv.textContent = '';
+      }
+    }
+    // Wywołuj updatePojedynekMessage w odpowiednich momentach:
+    // - po wejściu do pokoju
+    // - po commitach
+    // - po resecie
+    // - po rozpoczęciu gry
+    // - po guessach
+    // Dodaj do showGuessSection i resetGameMain:
+    const origShowGuessSection = showGuessSection;
+    showGuessSection = function() {
+      origShowGuessSection.apply(this, arguments);
+      updatePojedynekMessage();
+    };
+    const origResetGameMain = resetGameMain;
+    resetGameMain = function() {
+      origResetGameMain.apply(this, arguments);
+      updatePojedynekMessage();
+    };
+    // --- KONIEC POJEDYNEK MESSAGE LOGIC ---
   </script>
 </body>
 <script src="test.js"></script>

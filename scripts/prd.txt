@@ -1,0 +1,85 @@
+<context>
+# Overview  
+Zabawna gra webowa dla dwóch osób, inspirowana sceną z filmu "Chłopaki nie płaczą" oraz kryptograficznym protokołem rzutu monetą przez telefon ([Wikipedia](https://pl.wikipedia.org/wiki/Rzut_monet%C4%85#Rzut_monet%C4%85_przez_telefon)). Pozwala rozstrzygać spory przez rzut monetą online, z humorem i memicznymi tekstami. Użytkownicy ("cwaniacy") mogą tworzyć pokoje, dołączać do nich i rozgrywać pojedynki.
+
+# Core Features  
+- **Tworzenie i dołączanie do pokoju**  
+  Użytkownik może utworzyć nowy pokój (unikalny ID) lub dołączyć do istniejącego, podając ID. Opcjonalnie podaje nick.
+- **Pojedynek dwóch graczy**  
+  Dwóch cwaniaków zgłasza gotowość, a następnie wybiera stronę monety (Awers/Rewers) w 10 sekund. Wynik jest losowy, ale oparty na prostym protokole (commitment/reveal).
+- **Wygrana, przegrana, timeout**  
+  Każdy scenariusz skutkuje innym widokiem, obrazkiem i tekstem. Po wszystkim można rozegrać rewanż.
+- **Humor i klimat**  
+  Komunikaty, obrazki i teksty stylizowane na "Chłopaki nie płaczą". Nicki/ID graczy, komunikaty "POJEDYNEK CWANIAKÓW", "JESTEŚ JEDYNYM CWANIAKIEM W TYM POKOJU" itd.
+- **Dark mode i responsywność**  
+  Przełącznik motywu, UI działa na desktopie i mobile.
+- **Animacje i UX**  
+  Loader (spinner) przy oczekiwaniu, pasek czasu, podświetlanie wyboru monety.
+- **Kopiowanie ID pokoju**  
+  Intuicyjny przycisk z tooltipem "Skopiowano!".
+- **Testy E2E**  
+  Automatyczne testy głównych scenariuszy (wygrana, przegrana, timeout).
+
+# User Experience  
+- **Persony:**
+  - Fani memów, osoby chcące rozstrzygnąć spór online, miłośnicy "Chłopaki nie płaczą".
+- **Flow:**
+  1. Tworzenie/dołączanie do pokoju
+  2. Oczekiwanie na drugiego gracza ("JESTEŚ JEDYNYM CWANIAKIEM...")
+  3. Obaj klikają "JA JESTEM CWANIAK"
+  4. Wybór strony monety (10s, timer)
+  5. Oczekiwanie na wybór drugiego
+  6. Wynik (wygrana/przegrana/timeout, memiczny obrazek i tekst)
+  7. "JESZCZE RAZ?" – rewanż
+- **UI/UX:**
+  - Duże przyciski, czytelne komunikaty, memiczne obrazki, dark mode, responsywność, animacje loadera i timera.
+
+<PRD>
+# Technical Architecture  
+- **Frontend:** HTML, CSS, JS (vanilla, bez frameworków), responsywny layout, dark mode, dynamiczna zmiana contentu bez modalnych okien.
+- **Backend:** Ruby (Sinatra), endpointy REST do obsługi pokoi, commit/reveal, guess, reset, pobieranie stanu.
+- **Data models:**
+  - Pokój: {id, commitments, reveals, guesses, guess_times, created_at}
+  - Commitment: {player_id, commitment, nick}
+- **APIs:**
+  - POST /api/create_room
+  - POST /api/:room_id/commit
+  - GET /api/:room_id/commitments
+  - POST /api/:room_id/reveal
+  - GET /api/:room_id/reveals
+  - POST /api/:room_id/guess
+  - GET /api/:room_id/guess_result
+  - POST /api/:room_id/reset
+- **Infrastructure:**
+  - Prosty hosting (np. Heroku, Railway, VPS), brak bazy – wszystko w RAM.
+
+# Development Roadmap  
+- **MVP:**
+  - Tworzenie/dołączanie do pokoju
+  - Flow pojedynku (commit, reveal, wybór, wynik, rewanż)
+  - Komunikaty, obrazki, dark mode, responsywność
+  - Testy E2E (Cypress)
+- **Future enhancements:**
+  - Historia pojedynków
+  - Więcej trybów gry
+  - Lepsza obsługa nicków/awatarów
+  - Integracja z social media
+
+# Logical Dependency Chain
+- Utworzenie backendu (modele, endpointy, logika gry)
+- Prosty frontend: flow pokoju, commit/reveal, wybór, wynik
+- Dodanie komunikatów, obrazków, dark mode, responsywności
+- Testy E2E
+- Dalsze usprawnienia (UX, nowe tryby, historia)
+
+# Risks and Mitigations  
+- **Brak bazy danych:** Wszystko w RAM – ryzyko utraty stanu przy restarcie. (Akceptowalne dla MVP)
+- **Synchronizacja graczy:** Potencjalne race conditions – testy E2E i prosta logika backendu.
+- **UX:** Zbyt skomplikowany flow – uproszczony, czytelny interfejs.
+- **Inspiracja filmem:** Ryzyko niezrozumienia żartów przez niektórych użytkowników – komunikaty neutralne, ale z opcją "trybu memicznego" w przyszłości.
+
+# Appendix  
+- Protokół rzutu monetą przez telefon: https://pl.wikipedia.org/wiki/Rzut_monet%C4%85#Rzut_monet%C4%85_przez_telefon
+- Cytaty i inspiracje: "Chłopaki nie płaczą"
+- Przykładowe komunikaty: "JESTEŚ JEDYNYM CWANIAKIEM...", "POJEDYNEK CWANIAKÓW", "JA JESTEM CWANIAK", "BRAWO! WYGRAŁEŚ IPHONA!", "BOOM! nie żyjesz, hahahahaha", "JESZCZE RAZ?"
+</PRD> 
