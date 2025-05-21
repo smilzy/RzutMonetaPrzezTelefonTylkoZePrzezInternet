@@ -17,6 +17,16 @@
     <input id="player-nick" class="big-input" placeholder="Twój nick (opcjonalnie)" style="margin-top:0.5em;" />
     <div id="room-link" style="display:none"></div>
   </div>
+  <div id="prime-setup" class="centered-col" style="display:none;">
+    <button id="prime-start-btn" class="big-btn" style="margin-bottom:2em;">Utwórz nową grę (liczby pierwsze)</button>
+    <div id="prime-game-panel" style="display:none;"></div>
+  </div>
+  <!-- Przyciski wyboru trybu gry w prawym górnym rogu -->
+  <div style="position:fixed;top:18px;right:170px;z-index:10001;display:flex;gap:0.5em;">
+    <button id="classic-mode-btn" class="big-btn" style="font-size:1.1em;padding:0.5em 1.2em;">Gra klasyczna</button>
+    <button id="prime-mode-btn" class="big-btn" style="font-size:1.1em;padding:0.5em 1.2em;">Gra na liczby pierwsze</button>
+  </div>
+  <button id="open-debug-modal" style="position:fixed;top:18px;right:18px;z-index:10001;font-size:1.1em;padding:0.5em 1.2em;background:#1a237e;color:#fff;border:none;border-radius:8px;box-shadow:0 2px 8px #0002;cursor:pointer;">Debug info</button>
   <div id="game" class="hidden" style="position:relative;">
     <div id="boom-skull" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.97); z-index:9999; text-align:center; padding-top:5em;">
       <img id="skull-img" src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2o1d3J4d3M2MWVkdjkzMWE4NDZwZmF3MjM0aHoxZ3l4YTh3ZmVjaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/QNuQ2a8DZUJU0QOHPd/giphy.gif" alt="BOOM!" style="width:120px;">
@@ -64,8 +74,6 @@
     <img class="coin-gif" src="https://media4.giphy.com/media/MOsuJf3qp3b1fQx2Iv/giphy.gif?cid=6c09b952fwmeraqx4dliut78mqlcmhs8s0imidrlxqupfu79&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=s" alt="Rzut monetą">
     <div class="big-title">RZUĆ</div>
   </div>
-  <!-- Dodaj przycisk debug info w rogu -->
-  <button id="open-debug-modal" style="position:fixed;top:18px;right:18px;z-index:10001;font-size:1.1em;padding:0.5em 1.2em;background:#1a237e;color:#fff;border:none;border-radius:8px;box-shadow:0 2px 8px #0002;cursor:pointer;">Debug info</button>
   <!-- Modal debug info -->
   <div id="debug-modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.45);z-index:10002;text-align:center;">
     <div style="background:#fff;max-width:520px;margin:7vh auto 0 auto;padding:2em 2em 1.5em 2em;border-radius:18px;box-shadow:0 4px 24px #0003;position:relative;">

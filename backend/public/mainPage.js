@@ -1,13 +1,40 @@
 import { appState } from './state.js';
 import { renderRoomView } from './roomView.js';
+// Dodaj import Prime Number Game (dynamicznie)
+let primeModule = null;
 
 export function renderMainPage() {
   document.getElementById('room-setup').style.display = '';
+  document.getElementById('prime-setup').style.display = 'none';
   document.getElementById('game').classList.add('hidden');
   document.getElementById('game-flow').style.display = 'none';
   document.getElementById('room-id').value = '';
   document.getElementById('player-nick').value = '';
   document.getElementById('room-link').style.display = 'none';
+
+  // Obsługa przycisków wyboru trybu gry w prawym górnym rogu
+  const classicBtn = document.getElementById('classic-mode-btn');
+  const primeBtn = document.getElementById('prime-mode-btn');
+  if (classicBtn) classicBtn.onclick = () => {
+    // Przywróć pełny widok strony głównej
+    document.getElementById('room-setup').style.display = '';
+    document.getElementById('prime-setup').style.display = 'none';
+    if (document.getElementById('game')) document.getElementById('game').classList.add('hidden');
+    if (document.getElementById('game-flow')) document.getElementById('game-flow').style.display = 'none';
+    if (document.getElementById('guess-result-main')) document.getElementById('guess-result-main').innerHTML = '';
+    if (document.getElementById('room-link')) document.getElementById('room-link').style.display = 'none';
+    if (document.getElementById('room-id')) document.getElementById('room-id').value = '';
+    if (document.getElementById('player-nick')) document.getElementById('player-nick').value = '';
+  };
+  if (primeBtn) primeBtn.onclick = async () => {
+    document.getElementById('room-setup').style.display = 'none';
+    document.getElementById('prime-setup').style.display = '';
+    if (!primeModule) {
+      primeModule = await import('./prime/primeMain.js');
+    }
+    primeModule.renderPrimeMain();
+  };
+
   document.getElementById('create-room').onclick = async () => {
     const res = await fetch('/api/create_room', {method: 'POST'});
     const data = await res.json();

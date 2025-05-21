@@ -106,16 +106,19 @@ input, button { margin: 0.5em 0; }
   flex-direction: row;
   justify-content: center;
   align-items: flex-start;
-  gap: 2em;
-  margin: 2em 0 1em 0;
+  gap: 1.2em;
+  margin: 1.2em 0 0.7em 0;
+  flex-wrap: wrap;
+  max-width: 100%;
 }
 .step-box {
   background: #f8f8f8;
   border: 2px solid #43a047;
   border-radius: 16px;
-  padding: 2em 1.5em 1.5em 1.5em;
-  min-width: 200px;
-  min-height: 180px;
+  padding: 1.2em 1em 1em 1em;
+  min-width: 120px;
+  max-width: 180px;
+  min-height: 120px;
   box-shadow: 0 2px 12px #0001;
   display: flex;
   flex-direction: column;
@@ -123,21 +126,25 @@ input, button { margin: 0.5em 0; }
   justify-content: flex-start;
   text-align: center;
   position: relative;
+  margin-bottom: 1em;
 }
 .step-box .big-btn {
-  margin-top: 1em;
+  margin-top: 0.7em;
+  font-size: 1em;
+  padding: 0.5em 1.2em;
 }
 .step-title {
-  font-size: 1.1em;
+  font-size: 1em;
   font-weight: bold;
   color: #1a237e;
-  margin-bottom: 0.7em;
+  margin-bottom: 0.5em;
 }
 .step-status {
-  font-size: 1em;
-  margin-top: 0.7em;
-  min-height: 2.2em;
+  font-size: 0.95em;
+  margin-top: 0.5em;
+  min-height: 1.8em;
   color: #333;
+  word-break: break-word;
 }
 h1 {
   text-align: center;
@@ -377,4 +384,37 @@ body.dark-mode .selected-pending img {
 }
 body.dark-mode .player-id-label {
   color: #aaa;
+}
+#debug-modal > div {
+  background: #fff;
+  color: #1a237e;
+  max-width: 480px;
+  margin: 7vh auto 0 auto;
+  padding: 1.2em 1.2em 1em 1.2em;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px #0003;
+  position: relative;
+}
+body.dark-mode #debug-modal > div {
+  background: #232a36 !important;
+  color: #e0e6ef;
+}
+body.dark-mode .step-title {
+  color: #fbc02d;
+}
+body.dark-mode .step-status {
+  color: #e0e6ef;
+}
+#debug-modal > div > div[style*='background'] {
+  background: #f5f5f5 !important;
+  color: #1a237e !important;
+  border-radius: 10px;
+  border: 1.5px solid #bbb;
+  padding: 0.7em 1em 0.5em 1em;
+  margin-bottom: 1.2em;
+}
+body.dark-mode #debug-modal > div > div[style*='background'] {
+  background: #232a36 !important;
+  color: #fbc02d !important;
+  border-color: #3a445a;
 } 

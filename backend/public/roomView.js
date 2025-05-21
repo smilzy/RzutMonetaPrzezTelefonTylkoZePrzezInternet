@@ -74,7 +74,7 @@ export function renderRoomView() {
             await api.resetRoom(appState.roomId);
             resetRoomViewUI();
             renderRoomView();
-          });
+          }, {}, appState.playerId);
           return;
         }
         await api.reveal(appState.roomId, appState.playerId, appState.bit, appState.nonce);
@@ -100,7 +100,7 @@ export function renderRoomView() {
             await api.resetRoom(appState.roomId);
             resetRoomViewUI();
             renderRoomView();
-          });
+          }, {}, appState.playerId);
           return;
         }
         // Sprawdzamy, czy drugi gracz nie zdążył (brak guessa przeciwnika)
@@ -109,7 +109,7 @@ export function renderRoomView() {
             await api.resetRoom(appState.roomId);
             resetRoomViewUI();
             renderRoomView();
-          });
+          }, {}, appState.playerId);
           return;
         }
         const myGuess = resultData.guesses[appState.playerId];
@@ -132,7 +132,7 @@ export function renderRoomView() {
           await api.resetRoom(appState.roomId);
           resetRoomViewUI();
           renderRoomView();
-        });
+        }, resultData.guesses, appState.playerId);
       });
     });
   };

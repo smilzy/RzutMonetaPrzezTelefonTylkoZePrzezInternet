@@ -4,5 +4,7 @@ export const appState = {
   bit: null,
   nonce: null,
   commitment: null,
-  revealed: false
+  revealed: false,
+  primeRoomId: null,
+  N: null
 }; 

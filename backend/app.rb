@@ -2,6 +2,8 @@ require 'sinatra'
 require 'json'
 require 'securerandom'
 require 'digest'
+require 'openssl'
+require_relative './prime_api'
 
 set :bind, '0.0.0.0'
 set :port, 4567
