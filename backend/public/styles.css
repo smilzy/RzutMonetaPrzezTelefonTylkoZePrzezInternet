@@ -1,0 +1,380 @@
+/* styles.css - wydzielone style z index.html */
+body { font-family: sans-serif; max-width: 500px; margin: 2em auto; }
+input, button { margin: 0.5em 0; }
+.hidden { display: none; }
+.commitment, .reveal, .result { margin: 1em 0; padding: 1em; border: 1px solid #ccc; }
+.big-btn {
+  font-size: 1.3em;
+  padding: 0.7em 2.5em;
+  background: #43a047;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 2px 8px #0002;
+  margin: 0.5em 0.5em 0.5em 0;
+  transition: background 0.2s, transform 0.1s;
+  outline: none;
+}
+.guess-btn img {
+  transition: box-shadow 0.2s;
+}
+.guess-btn.selected img, .guess-btn:focus img {
+  box-shadow: 0 0 0 4px #43a047;
+}
+.centered-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+  margin: 1.5em 0;
+}
+.centered-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.big-input {
+  font-size: 1.3em;
+  padding: 0.6em 1.2em;
+  border-radius: 10px;
+  border: 1.5px solid #bbb;
+  margin: 0.5em 0;
+  width: 260px;
+  text-align: center;
+}
+.room-id-box {
+  background: #f1f8e9;
+  border: 2px solid #43a047;
+  border-radius: 16px;
+  padding: 1.2em 2em;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #1a237e;
+  margin: 1.5em auto 1em auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5em;
+  cursor: pointer;
+  max-width: 500px;
+  box-shadow: 0 2px 12px #0001;
+  position: relative;
+  transition: background 0.2s;
+}
+.room-id-box:hover {
+  background: #e8f5e9;
+}
+.copy-btn {
+  font-size: 1em;
+  padding: 0.4em 1.2em;
+  background: #388e3c;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-left: 1em;
+  transition: background 0.2s;
+}
+.copy-btn:hover {
+  background: #256029;
+}
+.copy-tooltip {
+  position: absolute;
+  top: -2.2em;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  padding: 0.3em 1em;
+  border-radius: 6px;
+  font-size: 0.95em;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 10;
+}
+.room-id-box.copied .copy-tooltip {
+  opacity: 1;
+}
+.steps-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 2em;
+  margin: 2em 0 1em 0;
+}
+.step-box {
+  background: #f8f8f8;
+  border: 2px solid #43a047;
+  border-radius: 16px;
+  padding: 2em 1.5em 1.5em 1.5em;
+  min-width: 200px;
+  min-height: 180px;
+  box-shadow: 0 2px 12px #0001;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  position: relative;
+}
+.step-box .big-btn {
+  margin-top: 1em;
+}
+.step-title {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #1a237e;
+  margin-bottom: 0.7em;
+}
+.step-status {
+  font-size: 1em;
+  margin-top: 0.7em;
+  min-height: 2.2em;
+  color: #333;
+}
+h1 {
+  text-align: center;
+  margin: 1.2em auto 0.5em auto;
+  font-size: 2.1em;
+  max-width: 95vw;
+  word-break: break-word;
+}
+@media (max-width: 600px) {
+  h1 {
+    font-size: 1.3em;
+    padding: 0 0.2em;
+  }
+}
+#start-modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(255,255,255,0.98);
+  z-index: 20000;
+  text-align: center;
+  padding-top: 6vh;
+}
+#start-modal .coin-gif {
+  width: 340px;
+  max-width: 90vw;
+  margin-bottom: 2em;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px #0002;
+}
+#start-modal .big-title {
+  font-size: 2.5em;
+  font-weight: bold;
+  color: #1a237e;
+  margin-bottom: 2em;
+  letter-spacing: 0.04em;
+}
+#start-modal .close-btn {
+  position: absolute;
+  top: 2.5vh;
+  right: 3vw;
+  font-size: 2.2em;
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  font-weight: bold;
+  transition: color 0.2s;
+  z-index: 10;
+}
+#start-modal .close-btn:hover {
+  color: #43a047;
+}
+.guess-btn-main {
+  margin: 1em;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: inline-block;
+  box-shadow: none;
+  padding: 0;
+}
+.guess-btn-main img {
+  width: 220px;
+  border: 3px solid #888;
+  border-radius: 50%;
+  transition: border 0.2s, box-shadow 0.2s, opacity 0.2s;
+  background: #fff;
+}
+.guess-btn-main.selected img, .guess-btn-main:focus img {
+  border: 3px solid #43a047;
+  box-shadow: 0 0 0 4px #43a047;
+  background: #e8f5e9;
+}
+.guess-btn-main:disabled img {
+  opacity: 0.5;
+}
+/* Usuwam zielone tło z .big-btn dla guess-btn-main */
+.guess-btn-main.big-btn {
+  background: none;
+  color: inherit;
+  box-shadow: none;
+}
+.guess-result {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-top: 2em;
+}
+.guess-result img {
+  margin-top: 1em;
+  width: 180px;
+  border-radius: 10px;
+}
+.guess-result button#play-again-btn-main {
+  margin-top: 2em;
+  font-size: 1.3em;
+  padding: 0.7em 2.5em;
+  background: #43a047;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 2px 8px #0002;
+  transition: background 0.2s;
+}
+.guess-result button#play-again-btn-main:hover {
+  background: #2e7031;
+}
+body.dark-mode {
+  background: #181c24;
+  color: #e0e6ef;
+}
+body.dark-mode .big-btn,
+body.dark-mode .copy-btn,
+body.dark-mode .step-box {
+  background: #232a36;
+  color: #e0e6ef;
+  border-color: #3a445a;
+  box-shadow: 0 2px 12px #0006;
+}
+body.dark-mode .room-id-box {
+  background: #232a36;
+  color: #e0e6ef;
+  border-color: #3a445a;
+}
+body.dark-mode .guess-btn-main img,
+body.dark-mode .guess-btn img {
+  background: #232a36;
+  border-color: #3a445a;
+}
+body.dark-mode .guess-btn-main.selected img,
+body.dark-mode .guess-btn-main:focus img {
+  background: #232a36;
+  border-color: #43a047;
+}
+body.dark-mode .centered-row,
+body.dark-mode .centered-col {
+  background: none;
+}
+body.dark-mode .guess-result {
+  color: #e0e6ef;
+}
+body.dark-mode .guess-result button#play-again-btn-main {
+  background: #2e7031;
+  color: #fff;
+}
+body.dark-mode .guess-result button#play-again-btn-main:hover {
+  background: #43a047;
+}
+body.dark-mode .timer-bar {
+  background: #232a36;
+}
+body.dark-mode .timer-bar-inner {
+  background: linear-gradient(90deg, #43a047, #fbc02d);
+}
+body.dark-mode #start-modal,
+body.dark-mode #debug-modal {
+  background: rgba(24,28,36,0.98) !important;
+  color: #e0e6ef;
+}
+body.dark-mode input,
+body.dark-mode .big-input {
+  background: #232a36;
+  color: #e0e6ef;
+  border-color: #3a445a;
+}
+body.dark-mode .copy-tooltip {
+  background: #232a36;
+  color: #e0e6ef;
+}
+#theme-toggle {
+  position: fixed;
+  top: 18px;
+  left: 18px;
+  z-index: 10010;
+  background: none;
+  border: none;
+  font-size: 2em;
+  cursor: pointer;
+  color: #1a237e;
+  transition: color 0.2s;
+}
+body.dark-mode #theme-toggle {
+  color: #fbc02d;
+}
+.loader {
+  display: inline-block;
+  width: 1.2em;
+  height: 1.2em;
+  border: 3px solid #43a047;
+  border-radius: 50%;
+  border-top: 3px solid transparent;
+  animation: spin 0.8s linear infinite;
+  margin-right: 0.7em;
+  vertical-align: middle;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg);}
+  100% { transform: rotate(360deg);}
+}
+body.dark-mode .loader {
+  border: 3px solid #fbc02d;
+  border-top: 3px solid transparent;
+}
+.selected-pending img {
+  border: 3px solid #fbc02d !important;
+  box-shadow: 0 0 0 4px #fbc02d !important;
+  background: #fffbe6 !important;
+}
+body.dark-mode .selected-pending img {
+  border: 3px solid #fbc02d !important;
+  box-shadow: 0 0 0 4px #fbc02d !important;
+  background: #232a36 !important;
+}
+#choose-row {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: center;
+  gap: 2em;
+}
+.selected-win img {
+  border: 3px solid #43a047 !important;
+  box-shadow: 0 0 0 4px #43a047 !important;
+}
+.selected-lose img {
+  border: 3px solid #b71c1c !important;
+  box-shadow: 0 0 0 4px #b71c1c !important;
+}
+.player-id-label {
+  font-size: 0.85em;
+  font-weight: normal;
+  display: block;
+  margin-left: 0;
+  margin-top: 0.3em;
+  color: #888;
+}
+body.dark-mode .player-id-label {
+  color: #aaa;
+} 
