@@ -37,8 +37,11 @@ post '/api/prime/generate_primes' do
   bits = 64 # Możesz zwiększyć do 128/256 dla większego bezpieczeństwa
   mod = [1, 3].sample
   p = generate_prime_mod4(bits, mod)
+  puts "P: #{p}"
   q = generate_prime_mod4(bits, mod)
+  puts "Q: #{q}"
   n = p * q
+  puts "N: #{n}"
   content_type :json
   {p: p, q: q, n: n}.to_json
 end

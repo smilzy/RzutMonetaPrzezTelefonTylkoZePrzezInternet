@@ -9,7 +9,6 @@ export function renderMainPage() {
   document.getElementById('game').classList.add('hidden');
   document.getElementById('game-flow').style.display = 'none';
   document.getElementById('room-id').value = '';
-  document.getElementById('player-nick').value = '';
   document.getElementById('room-link').style.display = 'none';
 
   // Obsługa przycisków wyboru trybu gry w prawym górnym rogu
@@ -24,7 +23,6 @@ export function renderMainPage() {
     if (document.getElementById('guess-result-main')) document.getElementById('guess-result-main').innerHTML = '';
     if (document.getElementById('room-link')) document.getElementById('room-link').style.display = 'none';
     if (document.getElementById('room-id')) document.getElementById('room-id').value = '';
-    if (document.getElementById('player-nick')) document.getElementById('player-nick').value = '';
   };
   if (primeBtn) primeBtn.onclick = async () => {
     // Utwórz pokój prime przez API

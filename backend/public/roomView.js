@@ -37,6 +37,16 @@ function resetRoomViewUI() {
   if(document.getElementById('cwaniak-img')) document.getElementById('cwaniak-img').style.display = '';
 }
 
+function resetPrimeState() {
+  appState.primeReady = false;
+  appState.isPrimeSetter = false;
+  appState.p = null;
+  appState.q = null;
+  appState.N = null;
+  // Jeśli chcesz, możesz też zresetować primeRoomId, jeśli tworzysz nowy pokój:
+  // appState.primeRoomId = null;
+}
+
 export function renderRoomView() {
   document.getElementById('room-setup').style.display = 'none';
   document.getElementById('game').classList.remove('hidden');
@@ -126,21 +136,24 @@ export function renderRoomView() {
       function showPrimeNAndModulo() {
         document.getElementById('game-flow').innerHTML = `
           <div style="font-size:1.5em;margin-bottom:1em;">N = <b>${appState.N}</b></div>
-          <div class="timer-bar" style="width:70%;height:18px;background:#eee;border-radius:9px;margin:1.2em auto 0;overflow:hidden;">
-            <div class="timer-bar-inner" id="guess-timer-bar-main" style="height:100%;background:linear-gradient(90deg,#43a047,#fbc02d);width:100%;transition:width 0.2s linear;"></div>
-          </div>
           <div id="prime-choose-modulo" style="margin-top:2em;"></div>
+          <div id="guess-result-main" class="guess-result"></div>
         `;
-        const timerBar = document.getElementById('guess-timer-bar-main');
-        let timer = null;
         if (!appState.isPrimeSetter) {
           document.getElementById('prime-choose-modulo').innerHTML = `
-            <div style="font-size:1.2em;margin-bottom:1em;">Zgadnij: p i q są ≡ <b>1</b> czy <b>3</b> (mod 4)?</div>
+            <div class="timer-bar" style="width:70%;height:18px;background:#eee;border-radius:9px;margin:0 auto 1.2em;overflow:hidden;">
+              <div class="timer-bar-inner" id="guess-timer-bar-main" style="height:100%;background:linear-gradient(90deg,#43a047,#fbc02d);width:100%;transition:width 0.2s linear;"></div>
+            </div>
+            <div style="font-size:1.2em;margin-bottom:1em;">
+              Zgadnij: p i q są ≡ <b>1</b> czy <b>3</b> (mod 4)?<br>
+              <span style='font-size:0.95em;color:#555;'>1 (mod 4) = orzeł, 3 (mod 4) = reszka</span>
+            </div>
             <button id="prime-guess-1" class="big-btn" style="margin-right:1em;">1 (mod 4)</button>
             <button id="prime-guess-3" class="big-btn">3 (mod 4)</button>
             <div id="prime-guess-status" style="margin-top:1em;"></div>
           `;
-          timer = startTimerBar(timerBar, 10, () => {
+          const timerBar = document.getElementById('guess-timer-bar-main');
+          let timer = startTimerBar(timerBar, 10, () => {
             document.getElementById('prime-choose-modulo').innerHTML += '<div style="color:#b71c1c;font-weight:bold;">Czas minął!</div>';
             document.getElementById('prime-guess-1').disabled = true;
             document.getElementById('prime-guess-3').disabled = true;
@@ -161,7 +174,14 @@ export function renderRoomView() {
                 setTimeout(async () => {
                   const revealRes = await fetch(`/api/prime/${appState.primeRoomId}/reveal`, {method: 'POST'});
                   const revealData = await revealRes.json();
-                  renderResultPhase(revealData.correct ? 'win' : 'lose', () => { window.location.reload(); });
+                  document.getElementById('prime-choose-modulo').innerHTML = '';
+                  renderResultPhase(revealData.correct ? 'win' : 'lose', () => {
+                    resetRoomViewUI();
+                    resetPrimeState();
+                    appState.gameMode = 'prime';
+                    appState.primeRoomId = appState.roomId;
+                    renderRoomView();
+                  }, null, appState.playerId);
                 }, 800);
               } else {
                 document.getElementById('prime-guess-status').textContent = data.error || 'Błąd';
@@ -186,7 +206,14 @@ export function renderRoomView() {
                 setTimeout(async () => {
                   const revealRes = await fetch(`/api/prime/${appState.primeRoomId}/reveal`, {method: 'POST'});
                   const revealData = await revealRes.json();
-                  renderResultPhase(revealData.correct ? 'win' : 'lose', () => { window.location.reload(); });
+                  document.getElementById('prime-choose-modulo').innerHTML = '';
+                  renderResultPhase(revealData.correct ? 'win' : 'lose', () => {
+                    resetRoomViewUI();
+                    resetPrimeState();
+                    appState.gameMode = 'prime';
+                    appState.primeRoomId = appState.roomId;
+                    renderRoomView();
+                  }, null, appState.playerId);
                 }, 800);
               } else {
                 document.getElementById('prime-guess-status').textContent = data.error || 'Błąd';
@@ -196,8 +223,22 @@ export function renderRoomView() {
             }
           };
         } else {
-          // Jeśli chcesz timer dla settera, możesz go tu uruchomić:
-          // timer = startTimerBar(timerBar, 10, () => {/* opcjonalnie blokuj coś po czasie */});
+          // Setter: po ustawieniu liczb czeka na zgadywanie i wynik
+          let resultPolling = setInterval(async () => {
+            const res = await fetch(`/api/prime/${appState.primeRoomId}/status`);
+            const data = await res.json();
+            if (data.guess && data.revealed) {
+              clearInterval(resultPolling);
+              document.getElementById('prime-choose-modulo').innerHTML = '';
+              renderResultPhase(data.result ? 'lose' : 'win', () => {
+                resetRoomViewUI();
+                resetPrimeState();
+                appState.gameMode = 'prime';
+                appState.primeRoomId = appState.roomId;
+                renderRoomView();
+              }, null, appState.playerId);
+            }
+          }, 1200);
         }
       }
     };
@@ -220,8 +261,7 @@ export function renderRoomView() {
       // Po obu commitmentach przechodzimy do wyboru monety
       renderCoinSelectionPhase(async (guessBit) => {
         if (guessBit === null) {
-          renderResultPhase('timeout', async () => {
-            await api.resetRoom(appState.roomId);
+          renderResultPhase('timeout', () => {
             resetRoomViewUI();
             renderRoomView();
           }, {}, appState.playerId);
@@ -246,8 +286,7 @@ export function renderRoomView() {
         }
         // Jeśli po 30 próbach nadal jest error "Not enough reveals" – uznaj to za walkower
         if (!resultData && lastError === 'Not enough reveals') {
-          renderResultPhase('win', async () => {
-            await api.resetRoom(appState.roomId);
+          renderResultPhase('win', () => {
             resetRoomViewUI();
             renderRoomView();
           }, {}, appState.playerId);
@@ -255,8 +294,7 @@ export function renderRoomView() {
         }
         // Sprawdzamy, czy drugi gracz nie zdążył (brak guessa przeciwnika)
         if (!resultData) {
-          renderResultPhase('timeout', async () => {
-            await api.resetRoom(appState.roomId);
+          renderResultPhase('timeout', () => {
             resetRoomViewUI();
             renderRoomView();
           }, {}, appState.playerId);
@@ -278,8 +316,7 @@ export function renderRoomView() {
         } else {
           result = 'lose';
         }
-        renderResultPhase(result, async () => {
-          await api.resetRoom(appState.roomId);
+        renderResultPhase(result, () => {
           resetRoomViewUI();
           renderRoomView();
         }, resultData.guesses, appState.playerId);

@@ -23,13 +23,19 @@ export function renderResultPhase(result, onRematch, guesses = null, playerId = 
     html = '<img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2o1d3J4d3M2MWVkdjkzMWE4NDZwZmF3MjM0aHoxZ3l4YTh3ZmVjaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/QNuQ2a8DZUJU0QOHPd/giphy.gif" style="width:120px; margin-top:1em; border-radius:12px;">' +
            '<div style="margin-top:1em; font-size:1.5em; color:#b71c1c; font-weight:bold;">BOOM! nie żyjesz, hahahahaha</div>' + opponentText;
   }
-  html += '<br><button id="play-again-btn-main" class="big-btn" style="margin-top:2em;">JESZCZE RAZ?</button>';
+  // Dodaj przycisk JESZCZE RAZ? tylko jeśli nie jesteśmy w trybie Prime
+  if (appState.gameMode !== 'prime') {
+    html += '<br><button id="play-again-btn-main" class="big-btn" style="margin-top:2em;">JESZCZE RAZ?</button>';
+  }
   resultDiv.innerHTML = html;
   resultDiv.style.display = '';
   document.getElementById('choose-section').style.display = 'none';
   document.getElementById('waiting-info-main').style.display = 'none';
+  // Obsłuż kliknięcie tylko jeśli przycisk istnieje
   const btn = document.getElementById('play-again-btn-main');
-  btn.onclick = () => {
-    if (typeof onRematch === 'function') onRematch();
-  };
+  if (btn) {
+    btn.onclick = () => {
+      if (typeof onRematch === 'function') onRematch();
+    };
+  }
 } 
