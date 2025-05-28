@@ -323,4 +323,31 @@ export function renderRoomView() {
       });
     });
   };
+
+  if (appState.gameMode === 'single') {
+    document.getElementById('room-info').style.display = 'none';
+    document.getElementById('throw-coin-btn').style.display = '';
+    document.getElementById('throw-coin-btn').onclick = async () => {
+      document.getElementById('throw-coin-btn').style.display = 'none';
+      if(document.getElementById('cwaniak-img')) document.getElementById('cwaniak-img').style.display = 'none';
+      renderCoinSelectionPhase(async (guessBit) => {
+        if (guessBit === null) {
+          renderResultPhase('timeout', () => {
+            resetRoomViewUI();
+            appState.gameMode = 'single';
+            renderRoomView();
+          });
+          return;
+        }
+        const wynik = Math.random() < 0.5 ? 0 : 1;
+        const result = (guessBit === wynik) ? 'win' : 'lose';
+        renderResultPhase(result, () => {
+          resetRoomViewUI();
+          appState.gameMode = 'single';
+          renderRoomView();
+        });
+      });
+    };
+    return;
+  }
 } 

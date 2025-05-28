@@ -1,5 +1,6 @@
 import { appState } from './state.js';
 import { renderRoomView } from './roomView.js';
+import * as api from './api.js';
 // Dodaj import Prime Number Game (dynamicznie)
 let primeModule = null;
 
@@ -9,20 +10,17 @@ export function renderMainPage() {
   document.getElementById('game').classList.add('hidden');
   document.getElementById('game-flow').style.display = 'none';
   document.getElementById('room-id').value = '';
-  document.getElementById('room-link').style.display = 'none';
 
   // Obsługa przycisków wyboru trybu gry w prawym górnym rogu
   const classicBtn = document.getElementById('classic-mode-btn');
   const primeBtn = document.getElementById('prime-mode-btn');
-  if (classicBtn) classicBtn.onclick = () => {
-    // Przywróć pełny widok strony głównej
-    document.getElementById('room-setup').style.display = '';
-    document.getElementById('prime-setup').style.display = 'none';
-    if (document.getElementById('game')) document.getElementById('game').classList.add('hidden');
-    if (document.getElementById('game-flow')) document.getElementById('game-flow').style.display = 'none';
-    if (document.getElementById('guess-result-main')) document.getElementById('guess-result-main').innerHTML = '';
-    if (document.getElementById('room-link')) document.getElementById('room-link').style.display = 'none';
-    if (document.getElementById('room-id')) document.getElementById('room-id').value = '';
+  const singleBtn = document.getElementById('single-mode-btn');
+  if (classicBtn) classicBtn.onclick = async () => {
+    // Utwórz pokój klasyczny przez API
+    const data = await api.createRoom();
+    const roomId = data.room_id;
+    const playerNick = document.getElementById('player-nick').value.trim();
+    onRoomJoin(roomId, playerNick);
   };
   if (primeBtn) primeBtn.onclick = async () => {
     // Utwórz pokój prime przez API
@@ -31,13 +29,16 @@ export function renderMainPage() {
     const playerNick = document.getElementById('player-nick').value.trim();
     onRoomJoin(data.room_id, playerNick);
   };
+  if (singleBtn) singleBtn.onclick = () => {
+    appState.gameMode = 'single';
+    appState.roomId = 'SOLO_' + Math.random().toString(36).slice(2, 8);
+    appState.playerId = 'cwaniak_' + Math.random().toString(36).slice(2, 8);
+    renderRoomView();
+  };
 
   document.getElementById('create-room').onclick = async () => {
-    const res = await fetch('/api/create_room', {method: 'POST'});
-    const data = await res.json();
+    const data = await api.createRoom();
     const roomId = data.room_id;
-    document.getElementById('room-link').innerHTML = `ID pokoju: <b>${roomId}</b> (przekaż koledze)`;
-    document.getElementById('room-link').style.display = 'block';
     const playerNick = document.getElementById('player-nick').value.trim();
     onRoomJoin(roomId, playerNick);
   };

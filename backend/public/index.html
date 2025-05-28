@@ -10,8 +10,9 @@
     <button id="theme-toggle" title="Przełącz motyw">🌙</button>
     <button id="classic-mode-btn" class="big-btn">Gra klasyczna</button>
     <button id="prime-mode-btn" class="big-btn">Gra na liczby pierwsze</button>
+    <button id="single-mode-btn" class="big-btn">Gra solo</button>
   </div>
-  <h1>Rzut Monetą Przez Telefon<br><span style="font-size:0.7em; font-weight:normal;">(Tylko Że Przez Internet ;))</span></h1>
+  <h1 style="text-align:center;"><a href="/" style="color:inherit;text-decoration:none;">Rzut Monetą Przez Telefon<br><span style="font-size:0.6em; font-style:italic; font-weight:normal; color:#444;">Tylko Że Przez Internet 😎</span></a></h1>
   <div id="room-setup" class="centered-col">
     <button id="create-room" class="big-btn" style="margin-bottom:2em;">Utwórz pokój</button>
     <div class="centered-row">
@@ -19,7 +20,6 @@
       <button id="join-room" class="big-btn">Dołącz do pokoju</button>
     </div>
     <input id="player-nick" class="big-input" placeholder="Twój nick (opcjonalnie)" style="margin-top:0.5em;" />
-    <div id="room-link" style="display:none"></div>
   </div>
   <div id="prime-setup" class="centered-col" style="display:none;">
     <button id="prime-start-btn" class="big-btn" style="margin-bottom:2em;">Utwórz nową grę (liczby pierwsze)</button>
@@ -38,7 +38,7 @@
       </div>
     </div>
   </div>
-  <div id="game-flow" style="text-align:center;margin-top:2em;">
+  <div id="game-flow" style="display:none;text-align:center;margin-top:2em;">
     <img id="cwaniak-img" src="https://static.pomagam.pl/media/project_photos/cache/UNvPmRE2Cgsk.jpg" alt="cwaniak" style="width:340px; border-radius:10px; margin-bottom:1em;">
     <button id="throw-coin-btn" class="big-btn" style="font-size:2em;">JA JESTEM CWANIAK</button>
     <div id="waiting-cwaniak" style="display:none; font-size:1.3em; color:#1a237e; margin-top:2em;">
